@@ -20,7 +20,7 @@ This project is developed using the following tools and collaborators:
 - **DOSBOX**: Used for testing and running the game on modern systems.
 - **ChatGPT (OpenAI)**: Assisting in planning, writing, and debugging the Assembly code, as well as generating ideas and solutions for game mechanics.
 - **MidJourney**: Employed for generating concept art and visual assets for the game.
-- **AUDIO**: Used for creating sound effects and background music, helping to set the mood and immerse players in the game world.
+- **UDIO**: Used for creating sound effects and background music, helping to set the mood and immerse players in the game world.
 
 ## Installation
 
