@@ -69,8 +69,8 @@ For any questions, suggestions, or collaborations, feel free to contact the proj
 Special thanks to the following tools and platforms that made this project possible:
 
 - **ChatGPT by OpenAI**: For providing assistance with code, design ideas, and project planning.
-- **MidJourney**: For generating the visual concept art that inspired much of the game's look and feel.
-- **AUDIO**: For sound design and music composition tools that bring the game's atmosphere to life.
+- **MidJourney**: AI for generating the visual concept art that inspired much of the game's look and feel.
+- **UDIO**: AI for sound design and music composition that bring the game's atmosphere to life.
 
 ---
 
