@@ -1,7 +1,7 @@
-﻿<Application x:Class="BmpToVga.App"
+﻿<Application x:Class="Base_Z_47_resource_manager.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:BmpToVga"
+             xmlns:local="clr-namespace:Base_Z_47_resource_manager"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

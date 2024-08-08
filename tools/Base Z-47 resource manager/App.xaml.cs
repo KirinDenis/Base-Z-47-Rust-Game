@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace BmpToVga
+namespace Base_Z_47_resource_manager
 {
     /// <summary>
     /// Interaction logic for App.xaml

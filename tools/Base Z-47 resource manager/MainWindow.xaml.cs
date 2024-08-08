@@ -1,21 +1,28 @@
 ﻿using Microsoft.Win32;
 using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
-namespace BmpToVga
+namespace Base_Z_47_resource_manager
 {
     /// <summary>
-    /// Interaction logic for Version2.xaml
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        private BitmapImage bitmap;
+        private BitmapImage bitmap = null;
 
         private int w = 320;
         private int h = 200;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -205,10 +212,10 @@ namespace BmpToVga
             ToLog("Converting complete. ATENTION! New files is rewrite!");
         }
 
-
-        private void WidthTextBox_TextChanged_1(object sender, TextChangedEventArgs e)
+        private void ConvertButton_Click(object sender, RoutedEventArgs e)
         {
             w = int.Parse(WidthTextBox.Text);
+            h = int.Parse(HeightTextBox.Text);
             Convert();
         }
     }

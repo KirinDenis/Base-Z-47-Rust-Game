@@ -1,0 +1,70 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RootNamespace>Base_Z_47_resource_manager</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\Palette24bit.bmp" />
+    <None Remove="Images\Palette8bit.bmp" />
+    <None Remove="Images\Palette8bit2.bmp" />
+    <None Remove="Images\VGAPalette.bmp" />
+    <None Remove="Images\VGAPalette24bit.bmp" />
+    <None Remove="Images\VGAPalette8bit.bmp" />
+    <None Remove="Images\VGAPalette8bit2.bmp" />
+    <None Remove="Images\VGAPalette8bit3.bmp" />
+    <None Remove="Images\VGAPalette8bit5.bmp" />
+    <None Remove="Images\VGAPalette8bit6.bmp" />
+    <None Remove="Images\VGAPalette8bit7.bmp" />
+    <None Remove="Images\VGAPalette8bit8.bmp" />
+    <None Remove="Images\VGAPallete8bit4.bmp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Images\Palette24bit.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Palette8bit.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Palette8bit2.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\VGAPalette.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\VGAPalette24bit.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\VGAPalette8bit.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\VGAPalette8bit2.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\VGAPalette8bit3.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\VGAPalette8bit5.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\VGAPalette8bit6.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\VGAPalette8bit7.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\VGAPalette8bit8.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\VGAPallete8bit4.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

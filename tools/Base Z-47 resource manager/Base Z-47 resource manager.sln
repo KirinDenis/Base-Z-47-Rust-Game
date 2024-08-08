@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BmpToVga", "BmpToVga\BmpToVga.csproj", "{377E2FAD-62CF-4C16-9A8F-E56E4EE54533}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Base Z-47 resource manager", "Base Z-47 resource manager.csproj", "{EAB69973-88D2-49FE-AD82-1A92A20AB8AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{377E2FAD-62CF-4C16-9A8F-E56E4EE54533}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{377E2FAD-62CF-4C16-9A8F-E56E4EE54533}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{377E2FAD-62CF-4C16-9A8F-E56E4EE54533}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{377E2FAD-62CF-4C16-9A8F-E56E4EE54533}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAB69973-88D2-49FE-AD82-1A92A20AB8AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAB69973-88D2-49FE-AD82-1A92A20AB8AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAB69973-88D2-49FE-AD82-1A92A20AB8AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAB69973-88D2-49FE-AD82-1A92A20AB8AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {D12BB848-A82F-45E0-951F-90D98F2A8F1B}
+		SolutionGuid = {8CBECD3E-A0F4-481E-8E28-69F685FB50EA}
 	EndGlobalSection
 EndGlobal
