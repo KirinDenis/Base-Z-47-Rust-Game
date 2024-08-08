@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BmpToVga", "BmpToVga\BmpToVga.csproj", "{377E2FAD-62CF-4C16-9A8F-E56E4EE54533}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{377E2FAD-62CF-4C16-9A8F-E56E4EE54533}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{377E2FAD-62CF-4C16-9A8F-E56E4EE54533}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{377E2FAD-62CF-4C16-9A8F-E56E4EE54533}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{377E2FAD-62CF-4C16-9A8F-E56E4EE54533}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D12BB848-A82F-45E0-951F-90D98F2A8F1B}
+	EndGlobalSection
+EndGlobal
