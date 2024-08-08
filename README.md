@@ -60,7 +60,7 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 
 ## Contact
 
-For any questions, suggestions, or collaborations, feel free to contact the project maintainer at [your-email@example.com].
+For any questions, suggestions, or collaborations, feel free to contact the project maintainer at [deniskirinacs@gmail.com].
 
 ---
 
