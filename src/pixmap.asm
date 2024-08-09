@@ -3,7 +3,7 @@
 	.CODE
 	.DATA
 
-LoadBitmap proc
+LoadPixmap proc
 
 	mov ax,3D00h ; open for input
 	mov dx,offset bmpFileName
@@ -33,42 +33,42 @@ LoadBitmap proc
 	mov ax, 3E00h  ;close file 
         int 21h  
 
-	mov bx,1
-_next_palete:
-        cmp bx,0
-        je _ok_draw
-        dec bx        
-
         lea di, bfType
-   ;     mov ax, word ptr [bfOffBits]
-   ;     add di, ax
-   ;     sub cx, ax
-        mov cx, 319*199
+        mov bx, word ptr [di]
+        mov cx, word ptr [di+2]
+        add di,4
+              
+        mov dx,320
+        sub dx,bx
+
         mov si, 0A000h
         mov es, si
         xor si, si
+        xor ah, ah
         
 _nextBitMap:
         cmp cx, 0
-        je _okNextBit
+        je _ok_draw
         dec cx
-        xor ah, ah
+	push bx
+_nextPixel:
+	cmp bx,0
+        je _nextLine
+        dec bx
 	mov al, ds:[di]
-;        mov bx, 255
-;        imul bx
-;        mov bx, 63
-;        div bx
         mov es:[si],al
         inc di
         inc si
-        jmp _nextBitMap     
-_okNextBit:
-	jmp _next_palete
+        jmp _nextPixel     
+_nextLine:
+        pop bx
+        add si,dx
+        jmp _nextBitMap
 _ok_draw:
 	ret
-LoadBitmap endp
+LoadPixmap endp
 
-bmpFileName db "logo1.bmp", 00h
+bmpFileName db "res\logo1.pix", 00h
 bmpfileHandle dw 00h
 
 ;BitMap bugger

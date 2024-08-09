@@ -12,7 +12,7 @@ main proc
     int 10h
 
 ;   call LineTests
-    call LoadBitmap
+    call LoadPixmap
 ;   call VGAPalette
 
     mov ah, 0
@@ -26,7 +26,7 @@ main proc
     int 21h
 main endp
 
-INCLUDE bitmap.asm
+INCLUDE pixmap.asm
 INCLUDE VGAPal.asm
 INCLUDE test.asm
 

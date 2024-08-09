@@ -20,8 +20,8 @@ namespace Base_Z_47_resource_manager
     {
         private BitmapImage bitmap = null;
 
-        private int w = 320;
-        private int h = 200;
+        private int destWidth = 320;
+        private int destHeight = 200;
 
         public MainWindow()
         {
@@ -45,8 +45,28 @@ namespace Base_Z_47_resource_manager
                 {
                     Uri uri = new Uri(dialog.FileName);
                     bitmap = new BitmapImage(uri);
+                    //calculate aspect rate
+
+                    destWidth = 320;
+                    destHeight = 200;
+                    double aspect = bitmap.Width / bitmap.Height;   
+                    if (aspect != 1.6)
+                    {
+                        if (bitmap.Width > bitmap.Height)
+                        {
+                            destHeight = (int)(bitmap.Height / (bitmap.Width / 320));
+                        }
+                        else
+                        {
+                            destWidth = (int)(bitmap.Width / (bitmap.Height / 200));
+                        }
+                    }
+                    
+                    WidthTextBox.Text = destWidth.ToString();
+                    HeightTextBox.Text = destHeight.ToString();
+
                     SrcImage.Source = bitmap;
-                    SrcImage.Source = ResizeImage((BitmapSource)SrcImage.Source, 320, 200);
+                    SrcImage.Source = ResizeImage((BitmapSource)SrcImage.Source, destWidth, destHeight);
                     ToLog($"Image loaded from: " + dialog.FileName);
                     ToLog($"Image resized to 320x200 pixels");
                     Convert();
@@ -150,7 +170,7 @@ namespace Base_Z_47_resource_manager
 
                 ToLog("Get 24bit 256 colors preVGA palette");
 
-                BitmapImage srcBitmapImage = ConvertToBitmapImage(ResizeImage(bitmap, w, h));
+                BitmapImage srcBitmapImage = ConvertToBitmapImage(ResizeImage(bitmap, destWidth, destHeight));
                 FormatConvertedBitmap srcFormatedBitmapSource = new FormatConvertedBitmap();
                 srcFormatedBitmapSource.BeginInit();
                 srcFormatedBitmapSource.Source = srcBitmapImage;
@@ -179,9 +199,21 @@ namespace Base_Z_47_resource_manager
 
 
                 ToLog("Starting join palettes");
-                byte[] srcPixels = new byte[w * 4 * h];
-                byte[] destPixels = new byte[w * h];
-                srcBitmap.CopyPixels(srcPixels, w * 4, 0);
+                byte[] srcPixels = new byte[destWidth * 4 * destHeight];
+                srcBitmap.CopyPixels(srcPixels, destWidth * 4, 0);
+
+
+                byte[] destPixels = new byte[destWidth * destHeight + 4];
+
+                ushort _width = (ushort)destWidth;
+                ushort _height = (ushort)destHeight;
+                destPixels[0] = (byte)(destWidth - (destWidth >> 8 << 8));
+                destPixels[1] = (byte)(destWidth >> 8);
+
+                destPixels[2] = (byte)(destHeight - (destHeight >> 8 << 8));
+                destPixels[3] = (byte)(destHeight >> 8);
+
+
 
                 for (int i = 0; i < srcPixels.Length; i += 4)
                 {
@@ -193,17 +225,17 @@ namespace Base_Z_47_resource_manager
                             srcPixels[i + 0]
                             );
 
-                    destPixels[i / 4] = (byte)VGA24bitPalette.Colors.IndexOf(color);
+                    destPixels[i / 4 + 4] = (byte)VGA24bitPalette.Colors.IndexOf(color);
                 }
                 ToLog("OK join palettes");
-                var destBitmap = BitmapSource.Create(w, h, 96, 96, PixelFormats.Indexed8, VGA24bitPalette, destPixels, w);
+                var destBitmap = BitmapSource.Create(destWidth, destHeight, 96, 96, PixelFormats.Indexed8, VGA24bitPalette, destPixels, destWidth);
                 ToLog("OK destination VGA bin 256 colors file");
 
                 DestImage.Source = destBitmap;
 
-                File.WriteAllBytes(@"..\..\..\..\..\logo1.bmp", destPixels);
+                File.WriteAllBytes(@"..\..\..\..\..\src\res\logo1.pix", destPixels);
                 ToLog("");
-                ToLog(@"Destination file save to: ..\..\..\..\..\logo1.bmp");
+                ToLog(@"Destination file save to: ..\..\..\..\..\logo1.pix");
             }
             catch (Exception ex)
             {
@@ -214,8 +246,8 @@ namespace Base_Z_47_resource_manager
 
         private void ConvertButton_Click(object sender, RoutedEventArgs e)
         {
-            w = int.Parse(WidthTextBox.Text);
-            h = int.Parse(HeightTextBox.Text);
+            destWidth = int.Parse(WidthTextBox.Text);
+            destHeight = int.Parse(HeightTextBox.Text);
             Convert();
         }
     }
