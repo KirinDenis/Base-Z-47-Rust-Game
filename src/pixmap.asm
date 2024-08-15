@@ -5,35 +5,11 @@
 
 LoadPixmap proc
 
-	mov ax,3D00h ; open for input
+;---Palette 
+
 	mov dx,offset bmpFileName
-	int 21h
-	mov bx,ax ; ax = bx = opened file handle
-
-
-	mov ax,4202h ;file offset to end of file 
-	xor dx,dx 
-	xor cx,cx 
-	int 21h   ;dx:ax the file size, ignore ax one segment file 
-        
-        mov cx,ax ;number of byte to read 
-        push cx 
-
-	mov ax,4200h ;file offset to begining of file 
-	xor dx,dx 
-	xor cx,cx 
-	int 21h  
-
-        pop cx
-
-	mov ax, 3F00h  ;load bitmap data from file 
-        lea dx, bfType
-        int 21h
-
-	mov ax, 3E00h  ;close file 
-        int 21h  
-
-        lea di, bfType
+        call LoadFile
+        mov di, dx
         mov bx, word ptr [di]
         mov cx, word ptr [di+2]
         add di,4
@@ -65,11 +41,14 @@ _nextLine:
         add si,dx
         jmp _nextBitMap
 _ok_draw:
+
+
 	ret
 LoadPixmap endp
 
 bmpFileName db "res\logo1.pix", 00h
 bmpfileHandle dw 00h
+INCLUDE fio.asm
 
 ;BitMap bugger
 ;tagBITMAPFILEHEADER 
