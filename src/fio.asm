@@ -12,16 +12,19 @@ LoadFile proc
 	int 21h
 	mov bx,ax ; ax = bx = opened file handle
 
+        xor cx,cx
+        xor dx,dx
 	mov ax, 4202h ; get file size
 	int 21h       ; bx handle
 
 ; ?X:DX
 ; ?X low
 ; DX hight
-        mov cx,ax 
+        mov cx,ax  ; rounding to paragraph size 
         push cx ;file size
 	push bx
 
+        add cx,10h ;to  
 	shr cx,4 ;11
 
 	mov ax, 4A00h ; ask DOS to extend segment       
@@ -44,7 +47,7 @@ LoadFile proc
 	xor cx,cx 
 	int 21h  
 
-        pop cx
+        pop cx  ;file size
 
 	mov ax, 3F00h  ;load bitmap data from file  ds:dx
         ;lea dx, bfType
@@ -53,6 +56,8 @@ LoadFile proc
 _error:
 	mov ax, 3E00h  ;close file 
         int 21h  
+
+        ret
 
 LoadFile endp
 end
