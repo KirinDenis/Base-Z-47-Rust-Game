@@ -8,6 +8,7 @@
 *.obj
 *.map
 *.td
+*.lst
 
 
 

@@ -3,15 +3,15 @@ cd C:\ASM\BASEZ47\SRC\
 
 ;c:\vc\vc.com
 
-tasm main.asm
-tasm drawline.asm
-tasm test.asm
-tasm pixmap.asm
-tasm vgapal.asm
-tasm drawrect.asm
-tasm fio.asm
+tasm /zi /z /t main.asm
+tasm /zi /z /t drawline.asm
+tasm /zi /z /t test.asm
+tasm /zi /z /t pixmap.asm
+tasm /zi /z /t vgapal.asm
+tasm /zi /z /t drawrect.asm
+tasm /zi /z /t fio.asm
 
-tlink -t main.obj test.obj drawline.obj pixmap.obj vgapal.obj drawrect.obj fio.obj
+tlink -Tde /l /v main.obj test.obj drawline.obj pixmap.obj vgapal.obj drawrect.obj fio.obj
 
 ;main.com
 
