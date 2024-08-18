@@ -1,7 +1,11 @@
-	.8086
-	.MODEL TINY
-	.CODE
-	
+.MODEL SMALL 	
+
+
+INCLUDE fio.asm
+
+_CODE SEGMENT PARA PUBLIC 'CODE' USE16
+ ASSUME CS:_CODE, DS:_DATAS
+
 
 LoadPixmap proc
 
@@ -41,14 +45,17 @@ _nextLine:
         add si,dx
         jmp _nextBitMap
 _ok_draw:
-
-
 	ret
 LoadPixmap endp
-.DATA
+_CODE ENDS
+
+
+
+_DATAS SEGMENT PARA PUBLIC 'DATA' USE16
+
 bmpFileName db "res\logo1.pix", 00h
 bmpfileHandle dw 00h
-INCLUDE fio.asm
+
 
 ;BitMap bugger
 ;tagBITMAPFILEHEADER 
@@ -71,4 +78,4 @@ biYPelsPerMeter dd 00h
 biClrUsed dd   00h  
 biClrImportant dd   00h  
 
-end
+_DATAS ENDS

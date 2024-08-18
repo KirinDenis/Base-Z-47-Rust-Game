@@ -1,14 +1,23 @@
-	.8086
-	.MODEL TINY
-	.CODE
-	.STARTUP
-;	ORG 100h
+.MODEL SMALL
+.STACK
 
-main proc
+_DATAS SEGMENT PARA PUBLIC 'DATA' USE16
+_DATAS ENDS
 
-    mov ah, 00h
-    mov al, 13h
-    int 10h
+INCLUDE pixmap.asm
+
+_CODE SEGMENT PARA PUBLIC 'CODE' USE16
+ ASSUME CS:_CODE, DS:_DATAS
+
+_START:
+;initial DS
+	mov ax, _DATAS
+        mov ds,ax
+    
+
+	mov ah, 00h
+	mov al, 13h
+	int 10h
 
 ;    call MemAlloc
 ;   call LineTests
@@ -21,14 +30,11 @@ main proc
     mov ax, 03h
     int 10h
 
-
     mov ax, 4C00h
     int 21h
-main endp
+_CODE ENDS
+
+END _START
 
 
-INCLUDE pixmap.asm
-INCLUDE VGAPal.asm
-INCLUDE test.asm
 
-end 

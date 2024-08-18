@@ -1,7 +1,8 @@
-	.8086
-	.MODEL TINY
-	.CODE
-	.DATA
+.MODEL SMALL
+
+
+_CODE SEGMENT PARA PUBLIC 'CODE' USE16
+ ASSUME CS:_CODE, DS:_DATAS
 
 ;-> dx offset of file name ASCIIZ
 ;<- CF if error
@@ -59,5 +60,11 @@ _error:
 
         ret
 
-LoadFile endp
-end
+LoadFile ENDP
+_CODE ENDS
+
+_DATAS SEGMENT PARA PUBLIC 'DATA' USE16
+_DATAS ENDS
+
+
+
