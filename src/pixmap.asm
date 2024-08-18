@@ -1,17 +1,17 @@
 	.8086
 	.MODEL TINY
 	.CODE
-	.DATA
+	
 
 LoadPixmap proc
 
 ;---Palette 
 
-	mov dx,offset bmpFileName
+	mov dx,offset ds:bmpFileName
         call LoadFile
         mov di, dx
-        mov bx, word ptr [di]
-        mov cx, word ptr [di+2]
+        mov bx, word ptr ds:[di]
+        mov cx, word ptr ds:[di+2]
         add di,4
               
         mov dx,320
@@ -45,7 +45,7 @@ _ok_draw:
 
 	ret
 LoadPixmap endp
-
+.DATA
 bmpFileName db "res\logo1.pix", 00h
 bmpfileHandle dw 00h
 INCLUDE fio.asm

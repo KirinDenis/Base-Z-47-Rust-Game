@@ -1,9 +1,8 @@
 	.8086
 	.MODEL TINY
 	.CODE
-	.DATA
 	.STARTUP
-	ORG 100h
+;	ORG 100h
 
 main proc
 
@@ -11,8 +10,9 @@ main proc
     mov al, 13h
     int 10h
 
+;    call MemAlloc
 ;   call LineTests
-    call LoadPixmap
+   call LoadPixmap
 ;   call VGAPalette
 
     mov ah, 0
@@ -25,6 +25,7 @@ main proc
     mov ax, 4C00h
     int 21h
 main endp
+
 
 INCLUDE pixmap.asm
 INCLUDE VGAPal.asm
