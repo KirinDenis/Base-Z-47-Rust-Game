@@ -13,6 +13,7 @@ LoadPixmap proc
 
 	mov dx,offset ds:bmpFileName
         call LoadFile
+
         mov di, dx
         mov bx, word ptr ds:[di]
         mov cx, word ptr ds:[di+2]

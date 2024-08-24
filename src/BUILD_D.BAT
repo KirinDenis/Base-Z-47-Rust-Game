@@ -8,10 +8,10 @@ REM c:\vc\vc.com
 
 @ECHO ON
 @ECHO ----------
-tasm main.asm
+tasm /zi /z /t main.asm
 
 REM link with debug info
-tlink -Tde main.obj
+tlink  /l /v  /Tde main.obj
 
 
 REM open if need run compiled file 
