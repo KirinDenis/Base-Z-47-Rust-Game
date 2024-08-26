@@ -1,3 +1,4 @@
+
 .MODEL SMALL
 
 
@@ -8,7 +9,7 @@ _CODE SEGMENT PARA PUBLIC 'CODE' USE16
 ;<- CF if error
 ;<- ds:dx data
 LoadFile proc
-
+        
 	mov ax,3D00h		; open file to read
 	int 21h
 	mov bx,ax		; bx opened file handle
@@ -22,20 +23,21 @@ LoadFile proc
         push cx			; store file size to stack
 	push bx
 
-        add cx,10h 		; paragrash size division round
-	shr cx,4 		; divide file size to 16
+        ;add cx,10h 		; paragrash size division round
+	;shr cx,4 		; divide file size to 16
+
+	;mov ax, 4A00h 		; ask DOS to extend segment       
+	;mov bx, cx              ; bx size of needed memory in paragraph 
+	;int 21h  
 
 
-	mov ax, 4A00h 		; ask DOS to extend segment       
-	mov bx, cx              ; bx size of needed memory in paragraph 
-	int 21h  
-
-
-	mov ax, 4800h 		; ask new segment memory block       
-	mov bx, cx         	; bx size of needed memory in paragraph 
-	int 21h  
-        jc _error          
-        mov ds,ax 		; extended data segment
+	;mov ax, 4800h 		; ask new segment memory block       
+	;mov bx, cx         	; bx size of needed memory in paragraph 
+	;int 21h  
+        ;jc _error          
+        mov ax,cx		; ax needed bytes
+        call GetMem             ; get memory
+        mov ds,dx 		; extended data segment
 
         pop bx 			; restore file descriptor to bx
 

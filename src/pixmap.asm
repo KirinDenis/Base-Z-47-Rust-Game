@@ -10,7 +10,7 @@ _CODE SEGMENT PARA PUBLIC 'CODE' USE16
 LoadPixmap proc
 
 ;---Palette 
-
+	push ds
 	mov dx,offset ds:bmpFileName
         call LoadFile
 
@@ -46,6 +46,7 @@ _nextLine:
         add si,dx
         jmp _nextBitMap
 _ok_draw:
+        pop ds
 	ret
 LoadPixmap endp
 _CODE ENDS
