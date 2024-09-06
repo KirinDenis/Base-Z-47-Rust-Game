@@ -15,6 +15,7 @@
 ;บ      บ 
 ;บ      บ 
 ;ศออออออผ    
+        lds di,b
 	mov ax, 0B800h    
 	mov es, ax 
 
@@ -90,6 +91,7 @@ backnext:
 
 	ret
 
+b dw 5
 buf db 0
 
 

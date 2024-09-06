@@ -7,18 +7,25 @@ block_counter db 0
 ;segment 2 byte 
 block db 5*100h dup(0) ;100h sections 
 
-heap db 'heap'
+
 _DATAS ENDS
 
 _CODE SEGMENT PARA PUBLIC 'CODE' USE16
  ASSUME CS:_CODE, DS:_DATAS
 
+;Init heap manager
 InitMem proc
-      lea di, block_counter        
+      lea di, ds:block		; first block allocate table record 
       mov ax, ds
-      lea bx, heap
-      shr bx, 4
-      add ax,bx
+      mov bx, ss           ; last program byte
+      add bx, 0FFFh   
+      shr bx, 4                 ; recalculate to pages 
+      add ax,bx                 ; first free byte of memory
+
+      inc block_counter         ; init first block 
+      mov cl,block_counter      
+      mov ds:[di],cl            ; store block number to allocate table 
+
       mov ds:[di+3], ax
       ret      
 InitMem endp 
@@ -26,24 +33,27 @@ InitMem endp
 ;-> ax needed memory in paragraphs 
 ;<- cl memory block index
 ;<- dx memory block segment
-GetMem proc
-       push ax
-       lea dx, block_counter
-       mov ax, 5
-       imul dx
-       lea di, block
-       add di, ax	
-       mov bx, ds:[di+1]
-       mov cx, ds:[di+3]
-       add bx,cx
+PUBLIC GetMem
+GetMem proc near
+       push ax       
+       mov dl, block_counter
+       dec dl 	        ;  normalize index to zero based 
+       mov ax, 5 
+       imul dl		 ; calculate offset of last block     
+       lea di, block     ; offset block allocate table 
+       add di, ax	 ; offset of last block 
+       mov bx, ds:[di+1] ; size of last block 
+       mov cx, ds:[di+3] ; segment of last block 
+       shr bx,4          ; calculate pages  
+       add bx,cx         ; free memory 
        pop ax
        
-       add di,5
-       inc block_counter
+       add di,5          ; first free block at block allocate table 
+       inc block_counter ; counter to next (free) block 
        mov cl,block_counter
-       mov ds:[di],cl  
-       mov ds:[di+1],ax
-       mov ds:[di+3],bx
+       mov ds:[di],cl    ; store next block 
+       mov ds:[di+1],ax  ; store memory size 
+       mov ds:[di+3],bx  ; store next free segment 
        mov dx,bx	           	
           
        ret

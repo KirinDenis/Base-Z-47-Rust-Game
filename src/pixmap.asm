@@ -4,15 +4,39 @@
 INCLUDE fio.asm
 
 _CODE SEGMENT PARA PUBLIC 'CODE' USE16
+pseg dw 0
+poffset dw -1
+
  ASSUME CS:_CODE, DS:_DATAS
 
+; stack x,y 
+;
+;
 
 LoadPixmap proc
 
 ;---Palette 
+	
+        pop cx
+	pop ax
+        pop si
+
+	push cx
 	push ds
+        push si
+        push ax
+        cmp poffset,-1
+        jne _notzero
 	mov dx,offset ds:bmpFileName
         call LoadFile
+        mov poffset,dx
+        mov pseg, ds 
+        jmp   _okdx
+_notzero:
+       mov dx, pseg
+       mov ds,dx
+       mov dx, poffset	
+_okdx:
 
         mov di, dx
         mov bx, word ptr ds:[di]
@@ -22,9 +46,14 @@ LoadPixmap proc
         mov dx,320
         sub dx,bx
 
-        mov si, 0A000h
-        mov es, si
-        xor si, si
+	pop ax ; y
+        mov si,320
+        push dx
+        imul si  
+        pop dx
+        pop si ; x 
+        add si, ax
+
         xor ah, ah
         
 _nextBitMap:
