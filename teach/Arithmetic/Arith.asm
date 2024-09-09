@@ -56,27 +56,36 @@
 ;ADC (Add with Carry)
 ;https://github.com/KirinDenis/Mystery-of-Base-Z-47-DOS-Game/wiki/%F0%9F%A7%AE-ADC-Instruction
 
+        clc            ; WARNING: Clear Carry Flag
 	mov al, 01h    ; Load 1 into AL
 	mov bl, 01h    ; Load 1 into BL
-	adc al, bl     ; AL = AL + BL + No Carry flag
+	adc al, bl     ; AL = AL + BL = 02h (NO Carry Flag)
 
+        stc            ; WARNING: Set Carry Flag
+	mov al, 01h    ; Load 1 into AL
+	mov bl, 01h    ; Load 1 into BL
+	adc al, bl     ; AL = AL + BL + Carry flag = 03h
+
+        clc            ; Clear Carry Flag
 	mov al, 0FFh   ; Load FF into AL
 	mov bl, 001h   ; Load 1 into BL
-	adc al, bl     ; AL = AL + BL + Carry flag = 00h -> In the 8086, byte register addition is cyclic—adding 1 to 0xFF results in 0x00 and sets the overflow flag.
+	adc al, bl     ; AL = AL + BL = 00h (NO Carry Flag) -> In the 8086, byte register addition is cyclic—adding 1 to 0xFF results in 0x00 and sets the overflow flag.
 	               ; Flags:
                        ; - Carry flag UP -> for this instruction is mean result is 100h = FFh + 1h
                        ; - Zero flag UP -> formaly the result is 0
                        ; - Parity Flag is UP -> 0 is even number
                        ; - Auxiliary Carry Flag is UP ->  a carry is a digit that is transferred from one column of digits to another column of more significant digits?
 
+		       ; WARNING: Carry Flag is UP from previous ADC instruction 	
 	mov al, 0FFh   ; Load FF into AL
 	mov bl, 002h   ; Load 1 into BL
-	adc al, bl     ; AL = AL + BL + Carry flag = 01h (101h) -> byte register cyclic—adding
+	adc al, bl     ; AL = AL + BL + Carry flag = 02h (102h) -> byte register cyclic—adding
                        ; Flags: Carry flag UP and Auxiliary Carry flag is UP
 
+                       ; WARNING: Carry Flag is UP from previous ADC instruction 	
 	mov al, 0FFh   ; Load FF into AL
 	mov bl, 0FFh   ; Load 1 into BL      
-	adc al, bl     ; AL = AL + BL + Carry flag = FEh -> FFh + FFh = 1FEh (-2 decimal -> SEE: Sign Flag flag)
+	adc al, bl     ; AL = AL + BL + Carry flag = FFh -> FFh + FFh + Carry flag = FFFFh (-1 decimal -> SEE: Sign Flag flag)
                        ; Flags: 
                        ; - Carry flag UP
                        ; - Auxiliary Carry flag is UP
