@@ -4,7 +4,13 @@
 	.STARTUP
 	ORG 100H
 
-;NOTE use Turbo Debugger menu View\CPU
+;NOTE: use Turbo Debugger menu View\CPU
+
+;NOTE: that all arithmetic instructions change the CPU flags state. However, you will not notice 
+;this in the Turbo Debugger -> if the flag is already in state. 
+;For pure experiments -> reset the flags state before executing an arithmetic instruction - manually 
+;or using flag control instructions.
+
 ;AAD Instruction (ASCII Adjust AX Before Division)
 ;https://github.com/KirinDenis/Mystery-of-Base-Z-47-DOS-Game/wiki/%F0%9F%A7%AE-AAD-Instruction
 
@@ -15,21 +21,21 @@
 
 	mov ah, 00h  
 	mov al, 00h  
-	aad	     
+	aad	     ; AX = 0000h
 
 	mov ah, 01h  
 	mov al, 01h  
-	aad	     
+	aad	     ; AX = 11 decimal
 
 	mov ah, 01h  
 	mov al, 09h  
-	aad	     
+	aad	     ; AX = 19 decimal
 
 	mov ah, 09h  
 	mov al, 09h  
-	aad	     
+	aad	    ; AX = 99 decimal 
 
-	mov ah, 10h  
+	mov ah, 10h ; AH the wrong BCD character encoding value for 8086 CPU  (10d -> 1010b -> the '*' simbol for Binary code is used in telephone communications)
 	mov al, 01h  
 	aad	    ; ERROR Sign Flag is UP  and Parity Flag is UP -> Parity Flag (PF) - this flag is set to 1 when there is even number of one bits in result, and to 0 when there is odd number of one bits. Even if result is a word only 8 low bits are analyzed)
 
