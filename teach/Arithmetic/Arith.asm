@@ -11,13 +11,17 @@
 ;For pure experiments -> reset the flags state before executing an arithmetic instruction - manually 
 ;or using flag control instructions.
 
+	jmp _das   ; for fast debug
+
 ;AAD Instruction (ASCII Adjust AX Before Division)
 ;https://github.com/KirinDenis/Mystery-of-Base-Z-47-DOS-Game/wiki/%F0%9F%A7%AE-AAD-Instruction
 
 
 	mov ah, 05h  ; AH = 05h (5 in decimal)
 	mov al, 08h  ; AL = 08h (8 in decimal)
-	aad	     ; AX = (10 * 5) + 8 = 58 decimal (3Ah)
+	aad	     ; AX = 003Ah (10 * 5) + 8 = 58 decimal (3Ah)
+	mov bl, 02h
+        div bl       ; AX = 58 / 2 = 29 (1Dh)
 
 	mov ah, 00h  
 	mov al, 00h  
@@ -91,7 +95,39 @@
                        ; - Auxiliary Carry flag is UP
                        ; - Sign Flag is UP the value is negative
 
+;ADD Instruction
+;https://github.com/KirinDenis/Mystery-of-Base-Z-47-DOS-Game/wiki/%E2%9E%95-ADD-Instruction
+_add:
+	mov al, 10h     ; Load 16 dec into AL
+	mov bl, 05h     ; Load 5  dec into BL
+	add al, bl      ; AL = AL + BL (AL now contains 15 hex = 21 dec)	      
+                        ; no flags
 
+        add al, byteValue         
+        add ax, wordValue 
+        add ax, 0FFFFh    ; flags chaged, owerflow 
+        add byteValue, al
+        add wordValue, ax
+        add wordValue, 1234h
 
+;DAA  Decimal Adjust AX After Addition
+;https://github.com/KirinDenis/Mystery-of-Base-Z-47-DOS-Game/wiki/%F0%9F%94%A2-DAA-Instruction
+_daa:
+	mov al, 25h   ; AL = 0010 0101b (BCD representation of 25 decimal)
+        add al, 05h   ; Add 5 to AL: AL = 0010 1010b = 2Ah = 42 dec 
+
+	daa           ; Adjust AL to valid BCD: AL = 0011 0000b (BCD representation of 30)
+
+;DAS (Decimal Adjust AX After Subtraction)
+;https://github.com/KirinDenis/Mystery-of-Base-Z-47-DOS-Game/wiki/%F0%9F%94%A2-DAS-Instruction
+_das:
+	mov al, 25h   ; AL = 0010 0101b (BCD representation of 25)
+	sub al, 06h   ; Subtract 06h: AL = 0001 1111b = 1Fh 
+
+	das           ; Adjust AL to valid BCD: AL = 0001 1001b (BCD result of 19)
+	        
 	ret
+byteValue db 10h
+wordValue dw 1010h
+
 end
