@@ -125,7 +125,29 @@ _das:
 	sub al, 06h   ; Subtract 06h: AL = 0001 1111b = 1Fh 
 
 	das           ; Adjust AL to valid BCD: AL = 0001 1001b (BCD result of 19)
-	        
+
+
+	mov al, 03h    ; AL = 0000 0011b (BCD representation of 3)
+	sub al, 07h    ; Subtract 7: AL = 1111 1100b = FCh (BCD result of -4)
+
+	das            ; Adjust AL to valid BCD: AL = 1001 0110b (BCD representation of 4 with borrow flags, 96-100=-4?)
+
+	mov al, 50h    ; AL = 0101 0000b (BCD representation of 50)
+        sub al, 25h    ; Subtract 25: AL = 0010 0101b (BCD result of 25)
+
+        das            ; Adjust AL to BCD: AL = 0010 0101b (BCD representation of 25)
+
+
+	mov ax, 5678h  ; AX = 5678h (BCD representation of 5718)
+        sub ax, 1234h  ; Subtract BCD number: AX = 4444h 
+
+        das            ; Adjust AX to valid BCD: AX = 4444h (BCD result of 4444)
+
+	mov ax, 1020h
+        sub ax, 1012h  ; AX = 0Eh
+  
+        das 	       ; AX = 08h (BCD 8)	
+
 	ret
 byteValue db 10h
 wordValue dw 1010h
