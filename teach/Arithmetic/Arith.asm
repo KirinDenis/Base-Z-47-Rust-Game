@@ -11,7 +11,7 @@
 ;For pure experiments -> reset the flags state before executing an arithmetic instruction - manually 
 ;or using flag control instructions.
 
-	jmp _das   ; for fast debug
+	jmp _daa   ; for fast debug
 
 ;AAD Instruction (ASCII Adjust AX Before Division)
 ;https://github.com/KirinDenis/Mystery-of-Base-Z-47-DOS-Game/wiki/%F0%9F%A7%AE-AAD-Instruction
@@ -117,6 +117,20 @@ _daa:
         add al, 05h   ; Add 5 to AL: AL = 0010 1010b = 2Ah = 42 dec 
 
 	daa           ; Adjust AL to valid BCD: AL = 0011 0000b (BCD representation of 30)
+
+        mov al, 99h    ; AL = 1001 1001b (BCD representation of 99)
+        add al, 01h    ; Add 1 to AL: AL = 1001 1010b (BCD representation of 100)
+
+        daa            ; Adjust AL to valid BCD: AL = 0000 0000b (BCD representation of 00 with carry)
+                       ; NOTE: Carry flag (CF) is set to indicate the result exceeds the BCD range
+
+	mov ax, 1234h  ; AX = 0001 0010 0011 0100b (BCD representation of 1234)
+        add ax, 5678h  ; Add BCD number: AX = 0110 1000 1010 1100b
+
+        daa            ; Adjust AX to valid BCD: AX = 0110 1000 0001 0010b (BCD representation of 6812)
+                       ; Carry flag (CF) is set to indicate the result exceeds the BCD range
+
+
 
 ;DAS (Decimal Adjust AX After Subtraction)
 ;https://github.com/KirinDenis/Mystery-of-Base-Z-47-DOS-Game/wiki/%F0%9F%94%A2-DAS-Instruction
