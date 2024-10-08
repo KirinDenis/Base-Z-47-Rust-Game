@@ -44,11 +44,17 @@ InitHeap ENDP
 ;<- cl memory block index
 ;<- dx memory block segment
 PUBLIC GetHeap
-GetHeap PROC near
+AllocateHeap PROC near
        cmp handlers,-1
-       jne heap_initialized
+       jne AllocateHeap_initialized
        call InitHeap
-heap_initialized:
+AllocateHeap_initialized:
+	cmp ax,0FFFh
+       jb AllocateHeap_OK
+	stc	
+	ret
+
+AllocateHeap_OK:
        push di
        push bx 
        push ax       
@@ -79,5 +85,20 @@ heap_initialized:
        pop di             
 
        ret
+
+AllocateHeap ENDP
+
+;-> al memory block handler
+;<- dx memory segment
+GetHeap PROC
+       xor ah,ah	
+       dec al
+       mov dx, SIZE HEAP_ITEM
+       imul dx
+       mov di, ax	  
+       mov dx, ds:[heap+di]._segment
+       ret	
+
 GetHeap ENDP
+
 _CODE ENDS

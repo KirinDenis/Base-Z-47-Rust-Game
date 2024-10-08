@@ -27,17 +27,22 @@ _START:
 
 
 	mov ax, 100
-        call GetHeap
+        call AllocateHeap
 
 	mov ax, 16
-        call GetHeap
+        call AllocateHeap
 
 	mov ax, 0F000h
-        call GetHeap
+        call AllocateHeap
+
+	mov al, 02h
+	call GetHeap
+
+	mov al, 03h
+	call GetHeap
 
 
-
-;   call LoadPixmap
+   call LoadPixmap
 
 
 
