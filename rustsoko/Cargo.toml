@@ -1,0 +1,13 @@
+[build]
+rustflags = ["--cap-lints=allow"]
+
+[package]
+name = "rustsoko"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rand = "0.8.0"
+console = "0.15.0"
+rodio = "0.17"
+
