@@ -1,17 +1,8 @@
-use once_cell::sync::Lazy;
-use std::collections::HashMap;
-use std::sync::Mutex;
 use console::Term;
 use console::Style;
 use console::Color;
 
-use crate::levels::LEVELS;
-
-pub fn draw(level_name: &str) {
-
-    let levels = LEVELS.lock().unwrap();
-    if let Some(level) = levels.get(level_name) {
-
+pub fn draw(level: [[char; 20]; 20]) {
     let term = Term::stdout();
     let style: Style = Style::new();
 
@@ -64,8 +55,6 @@ pub fn draw(level_name: &str) {
       x=0;
       y+=2;
     } 
-}
-
 
 
 }

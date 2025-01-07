@@ -1,19 +1,14 @@
 mod backgroundthread;
-mod levels;
 mod drawlevel;
-
-use once_cell::sync::Lazy;
-use std::collections::HashMap;
-use std::sync::Mutex;
+mod level1;
+mod level2;
 use console::Term;
 use console::Style;
 use console::Color;
 use std::thread;
 use std::time::Duration;
-
-
-use crate::levels::LEVELS;
-
+//use rodio::{OutputStream, source::SineWave};
+//use rodio::Source;
 
 struct Position {
       x: usize,
@@ -21,20 +16,8 @@ struct Position {
 }
 
 
-fn modify_level(level_name: &str, x: usize, y: usize, value: char) {
-    let mut levels = LEVELS.lock().unwrap();
-    if let Some(level) = levels.get_mut(level_name) {
-        level[x][y] = value;
-    } else {
-        println!("Level {} not found!", level_name);
-    }
-}
-
-fn getHeroPos(level_name: &str) -> Position {
-
-    let mut pos = Position{x: 0, y : 0};
-    let mut levels = LEVELS.lock().unwrap();
-    if let Some(level) = levels.get_mut(level_name) {
+fn getHeroPos(level: [[char; 20]; 20]) -> Position {
+  let mut pos = Position{x: 0, y : 0};
 
     let mut x = 0;
     let mut y = 0;
@@ -52,44 +35,44 @@ fn getHeroPos(level_name: &str) -> Position {
        y = 0;
        x += 1;
      } 
-    }
     return pos; 
 }
 
-fn canStep(level_name: &str, x: isize, y: isize) -> bool {
+/*
+fn canStep(level: [[char; 20]; 20], pos: &Position, x: usize, y: usize) -> bool {
 
-    let mut pos = getHeroPos(level_name);       
-    let mut levels = LEVELS.lock().unwrap();
-    if let Some(level) = levels.get_mut(level_name) {
-
-//    pos.x += x as usize;
-//    pos.y -= y as usize;
-    
     if level[pos.x][pos.y] == ' ' || level[pos.x][pos.y] == '.' {
-       //level[pos.x][pos.y] = '@';
+       pos.x += x;
+       pos.y += y;
+       level[pos.x][pos.y] = '@';
        return true;
     }
-   }
-   return true;
+    else  
+    {
+       return true;
+    }
 }
-
-
+*/
 
 fn main() {
+    
     let term = Term::stdout();
     term.clear_screen().unwrap();
     term.hide_cursor();
 
     backgroundthread::run();
 
-    
-    let mut level = "level1";
-  
+    let mut level: [[char; 20]; 20] = level1::get();
+
     let mut heroPos = getHeroPos(level);       
     drawlevel::draw(level);
+    print!("x - {} ", heroPos.x);
+    print!("y - {} ", heroPos.y);
 
+
+    
     loop {
-
+/*
             if let Ok(c) = term.read_char() {
                print!("{}", c);
                if c == 'q' {
@@ -97,28 +80,25 @@ fn main() {
                }
                else 
                if c == '1' {
-
-                  level = "level1";
+		  level = level1::get();    
                   heroPos = getHeroPos(level);       
                   drawlevel::draw(level);
                }
 	       else  	
                if c == '2' {
-                  level = "level2";
+		  level = level2::get();           
                   heroPos = getHeroPos(level);       
                   drawlevel::draw(level);
                }
-
                else 
                if c == 'w' {
-                 if canStep(level, -1, 0) {
-                 modify_level(level,heroPos.x, heroPos.y, ' ');
-                 heroPos.x -= 1;
-                 modify_level(level,heroPos.x, heroPos.y, '@');
+                 if canStep(level, &heroPos, -1, 0) {
+                 //level[heroPos.x][heroPos.y] = ' ';
+                 //heroPos.x -= 1;
+                 //level[heroPos.x][heroPos.y] = '@';
                  drawlevel::draw(level);
                  }
                }
-/*
                else 
                if c == 's' {
                  if canStep(level, &heroPos, 1, 0) {
@@ -149,26 +129,37 @@ fn main() {
 
 
 
-*/
-            }
 
+            }
+*/
      thread::sleep(Duration::from_millis(50));   
     }
 
 
+    /*
+    let (_stream, stream_handle) = OutputStream::try_default().unwrap();
+    let source = SineWave::new(400.0).take_duration(Duration::from_millis(70));
+    stream_handle.play_raw(source.convert_samples()).unwrap();
+    let source = SineWave::new(300.0).take_duration(Duration::from_millis(50));
+    stream_handle.play_raw(source.convert_samples()).unwrap();
+    let source = SineWave::new(550.0).take_duration(Duration::from_millis(70));
+    stream_handle.play_raw(source.convert_samples()).unwrap();
+    let source = SineWave::new(450.0).take_duration(Duration::from_millis(50));
+    stream_handle.play_raw(source.convert_samples()).unwrap();
+    let source = SineWave::new(400.0).take_duration(Duration::from_millis(70));
+    stream_handle.play_raw(source.convert_samples()).unwrap();
+    let source = SineWave::new(300.0).take_duration(Duration::from_millis(50));
+    stream_handle.play_raw(source.convert_samples()).unwrap();
+    */
 
+    /*
+    for c in (0..255) {
+    let style: Style = Style::new()
+    .fg(Color::Color256(255-c))
+    .bg(Color::Color256(c));
 
-/*
-    println!("Level 1:");
-    drawlevel::draw("level1");
+    print!("{}", style.apply_to("0"));
+    }
+    */
 
-
-    modify_level("level1", 2, 2, 'X');
-    println!("\nModified Level 1:");
-    drawlevel::draw("level1");
-
-
-    println!("\nLevel 2:");
-    drawlevel::draw("level2");
-*/
 }
