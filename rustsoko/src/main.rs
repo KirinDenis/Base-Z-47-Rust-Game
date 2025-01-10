@@ -62,15 +62,40 @@ fn canStep(level_name: &str, x: isize, y: isize) -> bool {
     let mut levels = LEVELS.lock().unwrap();
     if let Some(level) = levels.get_mut(level_name) {
 
-//    pos.x += x as usize;
-//    pos.y -= y as usize;
-    
+    //pos.x += x as usize;
+    //pos.y += y as usize;
+
+      println!();
+      print!("x={}", pos.x);
+      print!("y={}", pos.y);
+      print!("position char ={}", level[pos.x][pos.y]);    
+
+      println!();
+
+      println!("position char ={}", level[pos.x][pos.y-1]);    
+      println!("position char ={}", level[pos.x][pos.y-2]);    
+      println!("position char ={}", level[pos.x][pos.y-3]);    
+      println!();
+
+      println!("position char ={}", level[pos.x][pos.y+1]);    
+      println!("position char ={}", level[pos.x][pos.y+2]);    
+      println!("position char ={}", level[pos.x][pos.y+3]);    
+      println!();
+
+    if y == -1 {
+      pos.y -= 1;
+      print!("x={}", pos.x);
+      print!("y={}", pos.y);
+    }
+
+     print!("position char ={}", level[pos.x][pos.y]);    
+
     if level[pos.x][pos.y] == ' ' || level[pos.x][pos.y] == '.' {
        //level[pos.x][pos.y] = '@';
        return true;
     }
    }
-   return true;
+   return false;
 }
 
 
@@ -108,10 +133,9 @@ fn main() {
                   heroPos = getHeroPos(level);       
                   drawlevel::draw(level);
                }
-
                else 
                if c == 'w' {
-                 if canStep(level, -1, 0) {
+                 if canStep(level, 0, -1) {
                  modify_level(level,heroPos.x, heroPos.y, ' ');
                  heroPos.x -= 1;
                  modify_level(level,heroPos.x, heroPos.y, '@');

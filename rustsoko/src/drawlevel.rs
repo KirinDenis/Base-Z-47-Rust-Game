@@ -15,11 +15,14 @@ pub fn draw(level_name: &str) {
     let term = Term::stdout();
     let style: Style = Style::new();
 
-    let mut x = 0;
-    let mut y = 0;
+//    let mut x = 0;
+//    let mut y = 0;
 
-    for row in level.iter(){
-      for &cell in row.iter() {
+//    for row in level.iter(){
+//      for &cell in row.iter() {
+       for y in (0..19) {
+        for x in (0..19) {
+         let cell = level[y][x];	
          if cell == '#' //Wall
          {
            term.move_cursor_to(x, y).unwrap(); 
@@ -59,10 +62,10 @@ pub fn draw(level_name: &str) {
            print!("{}", style.apply_to("    "));                 
          }
 
-         x+=4;
+//         x+=4;
       }
-      x=0;
-      y+=2;
+//      x=0;
+//      y+=2;
     } 
 }
 
