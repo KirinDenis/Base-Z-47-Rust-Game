@@ -13,6 +13,7 @@ use std::time::Duration;
 
 
 use crate::levels::LEVELS;
+use crate::levels::CLEVELS;
 
 
 struct Position {
@@ -133,8 +134,25 @@ fn main() {
                }
 	       else  	
                if c == '2' {
-                  level_name = "level2";
-                  hero_pos = get_hero_pos(level_name);       
+
+	    let mut levels = LEVELS.lock().unwrap();
+	    if let Some(level) = levels.get_mut("level2") {
+              let mut cls = CLEVELS.lock().unwrap();
+              if let mut cl = cls {
+                  //  cl =  level;
+                 // cl[1][1] = '#';
+
+       for y in (0..19) {
+        for x in (0..19) {
+          cl[y][x] = level[y][x];
+	}
+	}
+
+		}
+	      }           
+
+                  //level_name = "level2";
+                  //hero_pos = get_hero_pos(level_name);       
                   drawlevel::draw(level_name);
                }
                else 

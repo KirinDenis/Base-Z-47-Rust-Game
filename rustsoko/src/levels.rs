@@ -9,6 +9,17 @@ use std::sync::Mutex;
 pub type Level = [[char; 20]; 20];
 
 
+pub static CLEVELS: Lazy<Mutex<Level>> = Lazy::new(|| {
+
+    let mut clevels = level1::get();
+
+//    clevels.insert(1, level1::get());
+
+    Mutex::new(clevels)
+
+});
+
+
 pub static LEVELS: Lazy<Mutex<HashMap<String, Level>>> = Lazy::new(|| {
     let mut levels = HashMap::new();
 

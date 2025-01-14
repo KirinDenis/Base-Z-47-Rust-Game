@@ -5,12 +5,12 @@ use console::Term;
 use console::Style;
 use console::Color;
 
-use crate::levels::LEVELS;
+use crate::levels::CLEVELS;
 
 pub fn draw(level_name: &str) {
 
-    let levels = LEVELS.lock().unwrap();
-    if let Some(level) = levels.get(level_name) {
+    let levels = CLEVELS.lock().unwrap();
+    if let mut level = levels {
 
     let term = Term::stdout();
     let style: Style = Style::new();
@@ -22,6 +22,7 @@ pub fn draw(level_name: &str) {
 //      for &cell in row.iter() {
        for y in (0..19) {
         for x in (0..19) {
+
          let cell = level[y][x];	
          if cell == '#' //Wall
          {
