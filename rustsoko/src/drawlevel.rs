@@ -1,3 +1,4 @@
+
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
 use std::sync::Mutex;
@@ -5,12 +6,17 @@ use console::Term;
 use console::Style;
 use console::Color;
 
-use crate::levels::CLEVELS;
+//use crate::levels::get_current_level;
 
-pub fn draw(level_name: &str) {
+use crate::levels::CLEVEL;
 
-    let levels = CLEVELS.lock().unwrap();
-    if let mut level = levels {
+pub fn draw() {
+
+
+
+    let mut clevel = CLEVEL.lock().unwrap();
+    if let Some(level) = clevel.get_mut("current_level") {
+
 
     let term = Term::stdout();
     let style: Style = Style::new();
@@ -68,8 +74,8 @@ pub fn draw(level_name: &str) {
 //      x=0;
 //      y+=2;
     } 
+//}
 }
-
 
 
 }

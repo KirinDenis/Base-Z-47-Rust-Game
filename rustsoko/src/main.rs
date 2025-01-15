@@ -12,9 +12,10 @@ use std::thread;
 use std::time::Duration;
 
 
-use crate::levels::LEVELS;
-use crate::levels::CLEVELS;
-
+//use crate::levels::LEVELS;
+use crate::levels::CLEVEL;
+//use crate::levels::get_current_level;
+use crate::levels::load_level;
 
 struct Position {
       row: usize,
@@ -22,20 +23,25 @@ struct Position {
 }
 
 
-fn modify_level(level_name: &str, row: usize, col: usize, value: char) {
-    let mut levels = LEVELS.lock().unwrap();
-    if let Some(level) = levels.get_mut(level_name) {
+fn modify_level(row: usize, col: usize, value: char) {
+      println!("Modify!");
+    let mut clevel = CLEVEL.lock().unwrap();
+    if let Some(level) = clevel.get_mut("current_level") {
+      println!("Modify 2!");
         level[row][col] = value;
-    } else {
+        level[1][1] = '#';
+        
+}       
+drawlevel::draw(); 
+//    } else {
      //   println!("Level {} not found!", level_name);
-    }
+//    }
 }
 
-fn get_hero_pos(level_name: &str) -> Position {
+fn get_hero_pos() -> Position {
 
-    let mut levels = LEVELS.lock().unwrap();
-    if let Some(level) = levels.get_mut(level_name) {
-
+    let mut clevel = CLEVEL.lock().unwrap();
+    if let Some(level) = clevel.get_mut("current_level") {
     let mut _row = 0;
     let mut _col = 0;
 
@@ -51,6 +57,7 @@ fn get_hero_pos(level_name: &str) -> Position {
        _row += 1;
      } 
     }
+    //}
     return Position{row: 0, col: 0}; 
 }
 
@@ -75,12 +82,13 @@ fn update_pos(row: isize, col: isize, mut pos: Position) -> Position {
     return pos; 
 }
 
-fn can_step(level_name: &str, row: isize, col: isize) -> bool {
+fn can_step(row: isize, col: isize) -> bool {
 
-    let mut pos = get_hero_pos(level_name);       
+    let mut pos = get_hero_pos();       
 
-    let mut levels = LEVELS.lock().unwrap();
-    if let Some(level) = levels.get_mut(level_name) {
+    let mut clevel = CLEVEL.lock().unwrap();
+    if let Some(level) = clevel.get_mut("current_level") {
+    level[1][1] = '#';
 
     pos = update_pos(row, col, pos);  
 
@@ -91,15 +99,15 @@ fn can_step(level_name: &str, row: isize, col: isize) -> bool {
    return false;
 }
 
-fn do_step(level_name: &str, row: isize, col: isize) -> bool {
-     if can_step(level_name,  row, col) {
-       let mut hero_pos = get_hero_pos(level_name);       
-       modify_level(level_name,hero_pos.row, hero_pos.col, ' ');
-
+fn do_step(row: isize, col: isize) -> bool {
+     if can_step(row, col) {
+       let mut hero_pos = get_hero_pos();       
+       modify_level(hero_pos.row, hero_pos.col, ' ');
+       drawlevel::draw();
        hero_pos  = update_pos(row, col, hero_pos);  
 
-       modify_level(level_name,hero_pos.row, hero_pos.col, '@');
-       drawlevel::draw(level_name);
+       modify_level(hero_pos.row, hero_pos.col, '@');
+       drawlevel::draw();
      }
     return true;
 }
@@ -113,10 +121,11 @@ fn main() {
     backgroundthread::run();
 
     
-    let mut level_name = "level1";
+   // let mut level_name = "level1";
   
-    let mut hero_pos = get_hero_pos(level_name);       
-    drawlevel::draw(level_name);
+//    let mut hero_pos = get_hero_pos(level_name);       
+    load_level("level1");
+    drawlevel::draw();
 
     loop {
 
@@ -128,48 +137,33 @@ fn main() {
                else 
                if c == '1' {
 
-                  level_name = "level1";
-                  hero_pos = get_hero_pos(level_name);       
-                  drawlevel::draw(level_name);
+		  load_level("level1");
+//                  level_name = "level1";
+//                  hero_pos = get_hero_pos(level_name);       
+                  drawlevel::draw();
                }
 	       else  	
                if c == '2' {
-
-	    let mut levels = LEVELS.lock().unwrap();
-	    if let Some(level) = levels.get_mut("level2") {
-              let mut cls = CLEVELS.lock().unwrap();
-              if let mut cl = cls {
-                  //  cl =  level;
-                 // cl[1][1] = '#';
-
-       for y in (0..19) {
-        for x in (0..19) {
-          cl[y][x] = level[y][x];
-	}
-	}
-
-		}
-	      }           
-
+		  load_level("level2");
                   //level_name = "level2";
                   //hero_pos = get_hero_pos(level_name);       
-                  drawlevel::draw(level_name);
+                  drawlevel::draw();
                }
                else 
                if c == 'w' {
-                 do_step(level_name,  -1, 0);
+                 do_step(-1, 0);
                }
                else 
                if c == 's' {
-                 do_step(level_name,  1, 0);               
+                 do_step(1, 0);               
                }
                else 
                if c == 'a' {
-                 do_step(level_name,  0, -1);                                
+                 do_step(0, -1);                                
                }
                else 
                if c == 'd' {
-                 do_step(level_name,  0, 1);                                                 
+                 do_step(0, 1);                                                 
                }
             }
 
