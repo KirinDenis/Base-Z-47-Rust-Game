@@ -29,13 +29,7 @@ fn modify_level(row: usize, col: usize, value: char) {
     if let Some(level) = clevel.get_mut("current_level") {
       println!("Modify 2!");
         level[row][col] = value;
-        level[1][1] = '#';
-        
-}       
-drawlevel::draw(); 
-//    } else {
-     //   println!("Level {} not found!", level_name);
-//    }
+       }       
 }
 
 fn get_hero_pos() -> Position {

@@ -29,43 +29,45 @@ pub fn draw() {
        for y in (0..19) {
         for x in (0..19) {
 
-         let cell = level[y][x];	
+         let cell = level[y][x];
+         let sx = x * 4;
+         let sy = y * 2;	
          if cell == '#' //Wall
          {
-           term.move_cursor_to(x, y).unwrap(); 
+           term.move_cursor_to(sx, sy).unwrap(); 
            print!("{}", style.apply_to("\u{2588}\u{2588}\u{2588}\u{2588}"));           
-           term.move_cursor_to(x, y+1).unwrap(); 
+           term.move_cursor_to(sx, sy+1).unwrap(); 
            print!("{}", style.apply_to("\u{2588}\u{2588}\u{2588}\u{2588}"));           
          }
  	else 
          if cell == '.' //Base
          {
-           term.move_cursor_to(x, y).unwrap(); 
+           term.move_cursor_to(sx, sy).unwrap(); 
            print!("{}", style.apply_to(" \u{250C}\u{2500}\u{2510} "));           
-           term.move_cursor_to(x, y+1).unwrap(); 
+           term.move_cursor_to(sx, sy+1).unwrap(); 
            print!("{}", style.apply_to(" \u{2514}\u{2500}\u{2518} "));           
          }
  	else 
          if cell == '$' //Box
          {
-           term.move_cursor_to(x, y).unwrap(); 
+           term.move_cursor_to(sx, sy).unwrap(); 
            print!("{}", style.apply_to(" \u{2554}\u{2550}\u{2557} "));           
-           term.move_cursor_to(x, y+1).unwrap(); 
+           term.move_cursor_to(sx, sy+1).unwrap(); 
            print!("{}", style.apply_to(" \u{255A}\u{2550}\u{255D} "));           
          }         
  	else 
          if cell == '@' //Hero
          {
-           term.move_cursor_to(x, y).unwrap(); 
+           term.move_cursor_to(sx, sy).unwrap(); 
            print!("{}", style.apply_to("@@@@ "));           
-           term.move_cursor_to(x, y+1).unwrap(); 
+           term.move_cursor_to(sx, sy+1).unwrap(); 
            print!("{}", style.apply_to("@@@@"));           
          }         
          else  //Default space 
 	 {
-           term.move_cursor_to(x, y).unwrap(); 
+           term.move_cursor_to(sx, sy).unwrap(); 
            print!("{}", style.apply_to("     "));           
-           term.move_cursor_to(x, y+1).unwrap(); 
+           term.move_cursor_to(sx, sy+1).unwrap(); 
            print!("{}", style.apply_to("    "));                 
          }
 
