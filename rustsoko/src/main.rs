@@ -24,10 +24,10 @@ struct Position {
 
 
 fn modify_level(row: usize, col: usize, value: char) {
-      println!("Modify!");
+
     let mut clevel = CLEVEL.lock().unwrap();
     if let Some(level) = clevel.get_mut("current_level") {
-      println!("Modify 2!");
+
         level[row][col] = value;
        }       
 }
@@ -112,7 +112,7 @@ fn main() {
     term.clear_screen().unwrap();
     term.hide_cursor();
 
-    backgroundthread::run();
+//    backgroundthread::run();
 
     
    // let mut level_name = "level1";

@@ -32,7 +32,7 @@ pub fn load_level(level_name: &str) {
 	if let Some(clevel) = clevel.get_mut("current_level") {
        			for y in (0..19) {
         		for x in (0..19) {
-          	  	clevel[y][x] = level[y][x];
+          	   	clevel[y][x] = level[y][x];
 
 			}
 			}

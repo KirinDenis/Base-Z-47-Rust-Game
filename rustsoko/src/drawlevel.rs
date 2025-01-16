@@ -30,14 +30,14 @@ pub fn draw() {
         for x in (0..19) {
 
          let cell = level[y][x];
-         let sx = x * 4;
+         let sx = x * 5;
          let sy = y * 2;	
          if cell == '#' //Wall
          {
            term.move_cursor_to(sx, sy).unwrap(); 
-           print!("{}", style.apply_to("\u{2588}\u{2588}\u{2588}\u{2588}"));           
+           print!("{}", style.apply_to("\u{2588}\u{2588}\u{2588}\u{2588}\u{2588}"));           
            term.move_cursor_to(sx, sy+1).unwrap(); 
-           print!("{}", style.apply_to("\u{2588}\u{2588}\u{2588}\u{2588}"));           
+           print!("{}", style.apply_to("\u{2588}\u{2588}\u{2588}\u{2588}\u{2588}"));           
          }
  	else 
          if cell == '.' //Base
@@ -59,9 +59,9 @@ pub fn draw() {
          if cell == '@' //Hero
          {
            term.move_cursor_to(sx, sy).unwrap(); 
-           print!("{}", style.apply_to("@@@@ "));           
+           print!("{}", style.apply_to(" @@@ "));           
            term.move_cursor_to(sx, sy+1).unwrap(); 
-           print!("{}", style.apply_to("@@@@"));           
+           print!("{}", style.apply_to(" @@@"));           
          }         
          else  //Default space 
 	 {
