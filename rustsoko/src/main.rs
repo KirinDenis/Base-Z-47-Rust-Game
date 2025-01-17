@@ -142,7 +142,7 @@ fn check_win() -> bool {
     let mut olevel = OLEVEL.lock().unwrap();
     if let Some(olevel) = olevel.get_mut("original_level") {
        for y in (0..20) {
-        for x in (0..20) {
+        for x in (0..30) {
            if clevel[y][x] == '$' && olevel[y][x] != '.' {
              return false;
            }
@@ -167,6 +167,7 @@ fn main() {
 //    let mut hero_pos = get_hero_pos(level_name);       
     load_level("level1");
     drawlevel::draw();
+    let mut levelindex = 1;
 
     loop {
 
@@ -177,15 +178,16 @@ fn main() {
                }
                else 
                if c == '1' {
-
-		  load_level("level1");
+                  levelindex = levelindex - 1;
+		  load_level(&format!("level{}", levelindex));
 //                  level_name = "level1";
 //                  hero_pos = get_hero_pos(level_name);       
                   drawlevel::draw();
                }
 	       else  	
                if c == '2' {
-		  load_level("level2");
+                  levelindex = levelindex + 1;
+		  load_level(&format!("level{}", levelindex));
                   //level_name = "level2";
                   //hero_pos = get_hero_pos(level_name);       
                   drawlevel::draw();

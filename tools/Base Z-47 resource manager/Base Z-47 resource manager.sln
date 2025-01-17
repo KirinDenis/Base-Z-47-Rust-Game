@@ -5,6 +5,8 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Base Z-47 resource manager", "Base Z-47 resource manager.csproj", "{EAB69973-88D2-49FE-AD82-1A92A20AB8AE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnet_level_parser", "..\..\rustsoko\src\dotnet_level_parser\dotnet_level_parser.csproj", "{8418FF13-CC3A-4594-B378-8F519A443CBF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{EAB69973-88D2-49FE-AD82-1A92A20AB8AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EAB69973-88D2-49FE-AD82-1A92A20AB8AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EAB69973-88D2-49FE-AD82-1A92A20AB8AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8418FF13-CC3A-4594-B378-8F519A443CBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8418FF13-CC3A-4594-B378-8F519A443CBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8418FF13-CC3A-4594-B378-8F519A443CBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8418FF13-CC3A-4594-B378-8F519A443CBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

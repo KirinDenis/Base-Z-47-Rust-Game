@@ -12,20 +12,20 @@ use ansi_colours::*;
 
 use crate::levels::CLEVEL;
 
-pub const F_LEVEL_COLOR : RGB8 = RGB8 { r: 27, g: 172, b: 86 };
-pub const B_LEVEL_COLOR : RGB8 = RGB8 { r: 57, g: 172, b: 172};
+pub const F_LEVEL_COLOR : RGB8 = RGB8 { r: 0xF7, g: 0xF0, b: 0xD4 };
+pub const B_LEVEL_COLOR : RGB8 = RGB8 { r: 0xF7, g: 0xF0, b: 0xD4};
 
-pub const F_HERO_COLOR : RGB8 = RGB8 { r: 172, g: 172, b: 57 };
-pub const B_HERO_COLOR : RGB8 = RGB8 { r: 172, g: 57, b: 57};
+pub const F_HERO_COLOR : RGB8 = RGB8 { r: 0xF7, g: 0xF0, b: 0xD4};
+pub const B_HERO_COLOR : RGB8 = RGB8 { r: 0xC2, g: 0x14, b: 0x60};
 
-pub const F_BLOCK_COLOR : RGB8 = RGB8 { r: 230, g: 230, b: 0 };
-pub const B_BLOCK_COLOR : RGB8 = RGB8 { r: 172, g: 155, b: 57 };
+pub const F_BLOCK_COLOR : RGB8 = RGB8 { r: 0x34, g: 0x7B, b: 0x98 };
+pub const B_BLOCK_COLOR : RGB8 = RGB8 { r: 0xFC, g: 0xCB, b: 0x1A };
 
-pub const F_BASE_COLOR : RGB8 = RGB8 { r: 230, g: 230, b: 0 };
-pub const B_BASE_COLOR : RGB8 = RGB8 { r: 57, g: 172, b: 172};
+pub const F_BASE_COLOR : RGB8 = RGB8 { r: 0xC2, g: 0x14, b: 0x60};
+pub const B_BASE_COLOR : RGB8 = RGB8 {  r: 0xF7, g: 0xF0, b: 0xD4};
 
-pub const F_WALL_COLOR : RGB8 = RGB8 { r: 27, g: 172, b: 86 };
-pub const B_WALL_COLOR : RGB8 = RGB8 { r: 128, g: 85, b: 0 };
+pub const F_WALL_COLOR : RGB8 = RGB8 { r: 0x34, g: 0x7B , b: 0x98};
+pub const B_WALL_COLOR : RGB8 = RGB8 { r: 0x34, g: 0x7B , b: 0x98};
 
 
 
@@ -52,7 +52,7 @@ pub fn draw() {
 //    for row in level.iter(){
 //      for &cell in row.iter() {
        for y in (0..20) {
-        for x in (0..20) {
+        for x in (0..30) {
 
          let cell = level[y][x];
          let sx = x * 5;
@@ -99,9 +99,9 @@ pub fn draw() {
          else  //Default space 
 	 {
            let style = get_style(F_LEVEL_COLOR, B_LEVEL_COLOR);
-           print!("{}", style.apply_to("....."));           
+           print!("{}", style.apply_to("     "));           
            term.move_cursor_to(sx, sy+1).unwrap(); 
-           print!("{}", style.apply_to("....."));                 
+           print!("{}", style.apply_to("     "));                 
          }
 
 //         x+=4;
