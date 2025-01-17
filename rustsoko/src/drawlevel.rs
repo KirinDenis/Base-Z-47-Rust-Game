@@ -5,14 +5,39 @@ use std::sync::Mutex;
 use console::Term;
 use console::Style;
 use console::Color;
+use rgb::RGB8;
+use ansi_colours::*;
 
 //use crate::levels::get_current_level;
 
 use crate::levels::CLEVEL;
 
+pub const F_LEVEL_COLOR : RGB8 = RGB8 { r: 27, g: 172, b: 86 };
+pub const B_LEVEL_COLOR : RGB8 = RGB8 { r: 57, g: 172, b: 172};
+
+pub const F_HERO_COLOR : RGB8 = RGB8 { r: 172, g: 172, b: 57 };
+pub const B_HERO_COLOR : RGB8 = RGB8 { r: 172, g: 57, b: 57};
+
+pub const F_BLOCK_COLOR : RGB8 = RGB8 { r: 230, g: 230, b: 0 };
+pub const B_BLOCK_COLOR : RGB8 = RGB8 { r: 172, g: 155, b: 57 };
+
+pub const F_BASE_COLOR : RGB8 = RGB8 { r: 230, g: 230, b: 0 };
+pub const B_BASE_COLOR : RGB8 = RGB8 { r: 57, g: 172, b: 172};
+
+pub const F_WALL_COLOR : RGB8 = RGB8 { r: 27, g: 172, b: 86 };
+pub const B_WALL_COLOR : RGB8 = RGB8 { r: 128, g: 85, b: 0 };
+
+
+
+fn get_style(foreground : RGB8, background: RGB8) -> Style {
+
+     Style::new()
+    .fg(Color::Color256(ansi256_from_rgb(foreground)))
+    .bg(Color::Color256(ansi256_from_rgb(background)))
+}
+
+
 pub fn draw() {
-
-
 
     let mut clevel = CLEVEL.lock().unwrap();
     if let Some(level) = clevel.get_mut("current_level") {
@@ -31,10 +56,13 @@ pub fn draw() {
 
          let cell = level[y][x];
          let sx = x * 5;
-         let sy = y * 2;	
+         let sy = y * 2;
+
+          term.move_cursor_to(sx, sy).unwrap(); 	
+
          if cell == '#' //Wall
          {
-           term.move_cursor_to(sx, sy).unwrap(); 
+           let style = get_style(F_WALL_COLOR, B_WALL_COLOR);
            print!("{}", style.apply_to("\u{2588}\u{2588}\u{2588}\u{2588}\u{2588}"));           
            term.move_cursor_to(sx, sy+1).unwrap(); 
            print!("{}", style.apply_to("\u{2588}\u{2588}\u{2588}\u{2588}\u{2588}"));           
@@ -42,7 +70,7 @@ pub fn draw() {
  	else 
          if cell == '.' //Base
          {
-           term.move_cursor_to(sx, sy).unwrap(); 
+           let style = get_style(F_BASE_COLOR, B_BASE_COLOR);
            print!("{}", style.apply_to(" \u{250C}\u{2500}\u{2510} "));           
            term.move_cursor_to(sx, sy+1).unwrap(); 
            print!("{}", style.apply_to(" \u{2514}\u{2500}\u{2518} "));           
@@ -50,7 +78,10 @@ pub fn draw() {
  	else 
          if cell == '$' //Box
          {
-           term.move_cursor_to(sx, sy).unwrap(); 
+
+
+           let style = get_style(F_BLOCK_COLOR, B_BLOCK_COLOR);
+
            print!("{}", style.apply_to(" \u{2554}\u{2550}\u{2557} "));           
            term.move_cursor_to(sx, sy+1).unwrap(); 
            print!("{}", style.apply_to(" \u{255A}\u{2550}\u{255D} "));           
@@ -58,17 +89,19 @@ pub fn draw() {
  	else 
          if cell == '@' //Hero
          {
-           term.move_cursor_to(sx, sy).unwrap(); 
+
+           let style = get_style(F_HERO_COLOR, B_HERO_COLOR);
+
            print!("{}", style.apply_to(" @@@ "));           
            term.move_cursor_to(sx, sy+1).unwrap(); 
            print!("{}", style.apply_to(" @@@ "));           
          }         
          else  //Default space 
 	 {
-           term.move_cursor_to(sx, sy).unwrap(); 
-           print!("{}", style.apply_to("      "));           
+           let style = get_style(F_LEVEL_COLOR, B_LEVEL_COLOR);
+           print!("{}", style.apply_to("....."));           
            term.move_cursor_to(sx, sy+1).unwrap(); 
-           print!("{}", style.apply_to("     "));                 
+           print!("{}", style.apply_to("....."));                 
          }
 
 //         x+=4;
