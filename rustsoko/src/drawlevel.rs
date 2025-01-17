@@ -26,8 +26,8 @@ pub fn draw() {
 
 //    for row in level.iter(){
 //      for &cell in row.iter() {
-       for y in (0..19) {
-        for x in (0..19) {
+       for y in (0..20) {
+        for x in (0..20) {
 
          let cell = level[y][x];
          let sx = x * 5;
@@ -61,14 +61,14 @@ pub fn draw() {
            term.move_cursor_to(sx, sy).unwrap(); 
            print!("{}", style.apply_to(" @@@ "));           
            term.move_cursor_to(sx, sy+1).unwrap(); 
-           print!("{}", style.apply_to(" @@@"));           
+           print!("{}", style.apply_to(" @@@ "));           
          }         
          else  //Default space 
 	 {
            term.move_cursor_to(sx, sy).unwrap(); 
-           print!("{}", style.apply_to("     "));           
+           print!("{}", style.apply_to("      "));           
            term.move_cursor_to(sx, sy+1).unwrap(); 
-           print!("{}", style.apply_to("    "));                 
+           print!("{}", style.apply_to("     "));                 
          }
 
 //         x+=4;

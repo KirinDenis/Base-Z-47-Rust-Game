@@ -14,6 +14,7 @@ use std::time::Duration;
 
 //use crate::levels::LEVELS;
 use crate::levels::CLEVEL;
+use crate::levels::OLEVEL;
 //use crate::levels::get_current_level;
 use crate::levels::load_level;
 
@@ -82,28 +83,74 @@ fn can_step(row: isize, col: isize) -> bool {
 
     let mut clevel = CLEVEL.lock().unwrap();
     if let Some(level) = clevel.get_mut("current_level") {
-    level[1][1] = '#';
+
 
     pos = update_pos(row, col, pos);  
 
     if level[pos.row][pos.col] == ' ' || level[pos.row][pos.col] == '.' {
        return true;
     }
+    else 
+    if level[pos.row][pos.col] == '$' {
+      pos = update_pos(row, col, pos);  
+      if level[pos.row][pos.col] == ' ' || level[pos.row][pos.col] == '.' {
+        level[pos.row][pos.col] = '$';
+        return true;
+      }
+    }
+    
    }
    return false;
 }
 
 fn do_step(row: isize, col: isize) -> bool {
      if can_step(row, col) {
+     {
        let mut hero_pos = get_hero_pos();       
-       modify_level(hero_pos.row, hero_pos.col, ' ');
-       drawlevel::draw();
+
+       //modify_level(hero_pos.row, hero_pos.col, ' ');
+
+    let mut clevel = CLEVEL.lock().unwrap();
+    if let Some(clevel) = clevel.get_mut("current_level") {
+    let mut olevel = OLEVEL.lock().unwrap();
+    if let Some(olevel) = olevel.get_mut("original_level") {
+
+       if olevel[hero_pos.row][hero_pos.col] != '$' {
+         clevel[hero_pos.row][hero_pos.col] = olevel[hero_pos.row][hero_pos.col];
+       }
+   }
+
        hero_pos  = update_pos(row, col, hero_pos);  
 
-       modify_level(hero_pos.row, hero_pos.col, '@');
-       drawlevel::draw();
+       clevel[hero_pos.row][hero_pos.col] = '@';
+    }
+
      }
+   }
+
+                 if check_win() {
+                    load_level("level2");
+                 }  
+
+    drawlevel::draw();          
     return true;
+}
+
+fn check_win() -> bool {
+    let mut clevel = CLEVEL.lock().unwrap();
+    if let Some(clevel) = clevel.get_mut("current_level") {
+    let mut olevel = OLEVEL.lock().unwrap();
+    if let Some(olevel) = olevel.get_mut("original_level") {
+       for y in (0..20) {
+        for x in (0..20) {
+           if clevel[y][x] == '$' && olevel[y][x] != '.' {
+             return false;
+           }
+        } 
+       }
+     }
+    }
+   return true;
 }
 
 
@@ -142,22 +189,27 @@ fn main() {
                   //level_name = "level2";
                   //hero_pos = get_hero_pos(level_name);       
                   drawlevel::draw();
+
                }
                else 
                if c == 'w' {
                  do_step(-1, 0);
+//       drawlevel::draw();
                }
                else 
                if c == 's' {
-                 do_step(1, 0);               
+                 do_step(1, 0);     
+//                  drawlevel::draw();          
                }
                else 
                if c == 'a' {
-                 do_step(0, -1);                                
+                 do_step(0, -1);    
+//                  drawlevel::draw();                            
                }
                else 
                if c == 'd' {
-                 do_step(0, 1);                                                 
+                 do_step(0, 1);     
+//                  drawlevel::draw();                                            
                }
             }
 
