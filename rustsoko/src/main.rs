@@ -182,6 +182,7 @@ fn main() {
 		  load_level(&format!("level{}", levelindex));
 //                  level_name = "level1";
 //                  hero_pos = get_hero_pos(level_name);       
+                  term.clear_screen().unwrap();
                   drawlevel::draw();
                }
 	       else  	
@@ -190,6 +191,7 @@ fn main() {
 		  load_level(&format!("level{}", levelindex));
                   //level_name = "level2";
                   //hero_pos = get_hero_pos(level_name);       
+                  term.clear_screen().unwrap();
                   drawlevel::draw();
 
                }
