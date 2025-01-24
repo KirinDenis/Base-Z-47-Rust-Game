@@ -2,6 +2,7 @@
 use once_cell::sync::Lazy;
 use std::collections::HashMap;
 use std::sync::Mutex;
+use std::thread;
 use console::Term;
 use console::Style;
 use console::Color;
@@ -12,6 +13,7 @@ use ansi_colours::*;
 //use crate::levels::get_current_level;
 
 use crate::levels::CLEVEL;
+use crate::levels::Level;
 
 pub const F_LEVEL_COLOR : RGB8 = RGB8 { r: 0xF7, g: 0xF0, b: 0xD4 };
 //pub const B_LEVEL_COLOR : RGB8 = RGB8 { r: 0xF7, g: 0xF0, b: 0xD4};
@@ -41,10 +43,6 @@ fn get_style(foreground : RGB8, background: RGB8) -> Style {
 
 pub fn draw() {
 
-    let mut clevel = CLEVEL.lock().unwrap();
-    if let Some(level) = clevel.get_mut("current_level") {
-
-
     let term = Term::stdout();
 //    let mut buffer = String::new();
 //    let mut buffer: Vec<(u16, u16, String)> = Vec::new();  
@@ -53,10 +51,9 @@ pub fn draw() {
                      
 
     if term.is_term() {
-        let (width, height) = term.size();
-        //println!("term {}, : {}", width, height);
+        //let (width, height) = term.size();
     } else {
-        //eprintln!("not term");
+        eprintln!("not term");
     }
 
     let (_sh, _sw) = term.size();
@@ -66,10 +63,17 @@ pub fn draw() {
        let sh: usize = _sh.into();
 
        let mut width  = 0;
-
+       let mut height  = 0;
 
        let mut _cxr = 0;
        let mut _cyb = 20;
+
+        let mut hx = 0;
+        let mut hy = 0;
+
+
+    let mut clevel = CLEVEL.lock().unwrap();
+    if let Some(level) = clevel.get_mut("current_level") {
 
     
        for y in (0..20) {
@@ -85,8 +89,6 @@ pub fn draw() {
 
           if cxr != 0 
           {
-//           term.move_cursor_to(1, 25).unwrap(); 
-//           println!("C___XR {}", cxr);                                   
           if _cxr < cxr && cxr != 0 {
              _cxr = cxr;
           }
@@ -100,24 +102,52 @@ pub fn draw() {
         }
 
            term.move_cursor_to(1, 35).unwrap(); 
-
-//           println!("XR {}", _cxr);                                   
-//           println!("YB {}", _cyb);                                   
-//           println!("SW {}", sw);                                   
-          
-           width = _cxr;
-           
+           width = _cxr;           
            width = ((sw / 5) / 2)  - (width / 2);
            width = width * 5;
-    
-//           println!("width {}", width);                                   
-
-           let mut height = _cyb;
+           height = _cyb;
            height = ((sh / 2) / 2)  - (height / 2);           
            height = height * 2;
 
 
+//-----------------
+       for y in (0..20) {
+         if y > _cyb {
+         break;
+        }
 
+        for x in (0..30) {
+
+         if x > _cxr {
+         break;
+         }
+
+        if level[y][x] == '@' {
+          hx = x;
+          hy = y;
+          break;
+        }
+
+      }
+     }
+//   }
+//---Here clevel no owners and wrap
+   let mut map: Level = *level;
+
+let builder = thread::Builder::new().stack_size(10 * 1024 * 1024); 
+let handle = builder.spawn(move || {
+    fill_level(hy, hx, 0, 0, 19, 29, map)
+}).unwrap();
+
+match handle.join() {
+  Ok(result)  => map = result, 
+  Err(e) => eprintln!("Error: {:?}", e),
+}
+
+//    let mut clevel = CLEVEL.lock().unwrap();
+//    if let Some(level) = clevel.get_mut("current_level") {
+
+//-----------------
        for y in (0..20) {
          if y > _cyb {
          break;
@@ -134,41 +164,25 @@ pub fn draw() {
          let sx = x * 5 + width;
          let sy = y * 2 + height;
 
- //        term.move_cursor_to(sx, sy).unwrap(); 	
-
          if cell == '#' //Wall
          {
            let style = get_style(F_WALL_COLOR, B_WALL_COLOR);
-//           print!("{}", style.apply_to("\u{2588}\u{2588}\u{2588}\u{2588}\u{2588}"));           
-
-//	   write!(&mut buffer, "{}", style.apply_to("\u{2588}\u{2588}\u{2588}\u{2588}\u{2588}"));           
            buffer.push((sx, sy, style.apply_to("\u{2588}\u{2588}\u{2588}\u{2588}\u{2588}").to_string(),));           
-
-//           term.move_cursor_to(sx, sy+1).unwrap(); 
-//           print!("{}", style.apply_to("\u{2588}\u{2588}\u{2588}\u{2588}\u{2588}"));           
            buffer.push((sx, sy+1, style.apply_to("\u{2588}\u{2588}\u{2588}\u{2588}\u{2588}").to_string(),));           
          }
  	else 
          if cell == '.' //Base
          {
            let style = get_style(F_BASE_COLOR, B_BASE_COLOR);
-//           print!("{}", style.apply_to(" \u{250C}\u{2500}\u{2510} "));           
+
           buffer.push((sx, sy, style.apply_to(" \u{250C}\u{2500}\u{2510} ").to_string(),));           
-//           term.move_cursor_to(sx, sy+1).unwrap(); 
-//           print!("{}", style.apply_to(" \u{2514}\u{2500}\u{2518} "));           
           buffer.push((sx, sy+1, style.apply_to(" \u{2514}\u{2500}\u{2518} ").to_string(),));           
          }
  	else 
          if cell == '$' //Box
          {
            let style = get_style(F_BLOCK_COLOR, B_BLOCK_COLOR);
-
            buffer.push((sx, sy, style.apply_to(" \u{2554}\u{2550}\u{2557} ").to_string(),));           
-
-
-//           print!("{}", style.apply_to(" \u{2554}\u{2550}\u{2557} "));           
-//           term.move_cursor_to(sx, sy+1).unwrap(); 
-//           print!("{}", style.apply_to(" \u{255A}\u{2550}\u{255D} "));           
           buffer.push((sx, sy+1, style.apply_to(" \u{255A}\u{2550}\u{255D} ").to_string(),));           
          }         
  	else 
@@ -177,10 +191,6 @@ pub fn draw() {
 
            let style = get_style(F_HERO_COLOR, B_HERO_COLOR);
             buffer.push((sx, sy, style.apply_to(" @@@ ").to_string(),));           
-
-//           print!("{}", style.apply_to(" @@@ "));           
-//           term.move_cursor_to(sx, sy+1).unwrap(); 
-//           print!("{}", style.apply_to(" @@@ "));           
             buffer.push((sx, sy+1, style.apply_to(" @@@ ").to_string(),));           
          }         
          else  //Default space 
@@ -188,26 +198,79 @@ pub fn draw() {
              let style = get_style(F_LEVEL_COLOR, B_LEVEL_COLOR);
              buffer.push((sx, sy, style.apply_to("     ").to_string(),));           
              buffer.push((sx, sy+1, style.apply_to("     ").to_string(),));           
-//           print!("{}", style.apply_to("     "));           
-//           term.move_cursor_to(sx, sy+1).unwrap(); 
-//           print!("{}", style.apply_to("     "));                 
+         }
+         //---- 
+         if map[y][x] == 'l' {
+           let style = get_style(F_HERO_COLOR, B_HERO_COLOR);
+            buffer.push((sx, sy, style.apply_to("lllll").to_string(),));           
+            buffer.push((sx, sy+1, style.apply_to("lllll").to_string(),));           
+
          }
 
-//         x+=4;
+
       }
-//      x=0;
-//      y+=2;
     } 
-//    term.clear_screen().unwrap();
+
     for(x,y, text) in buffer {
         term.move_cursor_to(x,y).unwrap();
         term.write_line(&text).unwrap();
     } 
 
-    //term.write_line(&buffer).unwrap();
-     
-//}
+}
+
+}
+
+fn is_floor(c : char) -> bool {
+  if c != '#' &&  c != 'l' {
+     true
+  } 
+  else { 
+     false 
+  }
+}
+
+fn  fill_level(hy: usize, hx: usize, sy: usize, sx: usize, ey: usize, ex: usize,  mut map: Level) -> Level {
+
+
+
+    if is_floor(map[hy][hx]) {
+       map[hy][hx] = 'l';
+    }
+
+
+    if hy > sy {
+    let _hy = hy - 1;
+    if is_floor(map[_hy][hx]) {
+       map = fill_level(_hy, hx, sy, sx, ey ,ex,  map);
+
+
+    }
+    }
+
+    if hy < ey {
+    let _hy = hy + 1;
+    if is_floor(map[_hy][hx]) {
+       map = fill_level(_hy, hx,  sy, sx,  ey ,ex,  map);
+
+
+    }
+    }
+
+    if hx > sx {
+    let _hx = hx - 1;
+    if is_floor(map[hy][_hx]) {
+       map = fill_level(hy, _hx,  sy, sx,  ey ,ex,  map);
+    }
+    }
+
+    if hx < ex {
+    let _hx = hx + 1;
+    if is_floor(map[hy][_hx]) {
+       map = fill_level(hy, _hx,  sy, sx,  ey ,ex, map);
+    }
+    }
+
+    map
 }
 
 
-}

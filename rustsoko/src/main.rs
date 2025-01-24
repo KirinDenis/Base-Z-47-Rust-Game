@@ -165,9 +165,9 @@ fn main() {
    // let mut level_name = "level1";
   
 //    let mut hero_pos = get_hero_pos(level_name);       
-    load_level("level1");
+    load_level("level4");
     drawlevel::draw();
-    let mut levelindex = 1;
+    let mut levelindex = 4;
 
     loop {
 
