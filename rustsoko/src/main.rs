@@ -10,6 +10,9 @@ use console::Style;
 use console::Color;
 use std::thread;
 use std::time::Duration;
+use rodio::{OutputStream, source::SineWave};
+use rodio::Source;
+
 
 
 //use crate::levels::LEVELS;
@@ -123,6 +126,8 @@ fn do_step(row: isize, col: isize) -> bool {
        hero_pos  = update_pos(row, col, hero_pos);  
 
        clevel[hero_pos.row][hero_pos.col] = '@';
+       step_sound();
+//        bell_sound();
     }
 
      }
@@ -153,6 +158,40 @@ fn check_win() -> bool {
    return true;
 }
 
+fn step_sound() {
+    let (_stream, stream_handle) = OutputStream::try_default().unwrap();
+    let source = SineWave::new(400.0).take_duration(Duration::from_millis(70));
+    stream_handle.play_raw(source.convert_samples()).unwrap();
+    let source = SineWave::new(300.0).take_duration(Duration::from_millis(50));
+    stream_handle.play_raw(source.convert_samples()).unwrap();
+    let source = SineWave::new(550.0).take_duration(Duration::from_millis(70));
+    stream_handle.play_raw(source.convert_samples()).unwrap();
+    let source = SineWave::new(450.0).take_duration(Duration::from_millis(50));
+    stream_handle.play_raw(source.convert_samples()).unwrap();
+    let source = SineWave::new(400.0).take_duration(Duration::from_millis(70));
+    stream_handle.play_raw(source.convert_samples()).unwrap();
+    let source = SineWave::new(300.0).take_duration(Duration::from_millis(50));
+    stream_handle.play_raw(source.convert_samples()).unwrap();
+
+}
+
+fn bell_sound() {
+    let (_stream, stream_handle) = OutputStream::try_default().unwrap();
+    let source = SineWave::new(1200.0).take_duration(Duration::from_millis(100));
+    stream_handle.play_raw(source.convert_samples()).unwrap();
+    let source = SineWave::new(800.0).take_duration(Duration::from_millis(100));
+    stream_handle.play_raw(source.convert_samples()).unwrap();
+    let source = SineWave::new(1500.0).take_duration(Duration::from_millis(80));
+    stream_handle.play_raw(source.convert_samples()).unwrap();
+    let source = SineWave::new(900.0).take_duration(Duration::from_millis(120));
+    stream_handle.play_raw(source.convert_samples()).unwrap();
+    let source = SineWave::new(1300.0).take_duration(Duration::from_millis(150));
+    stream_handle.play_raw(source.convert_samples()).unwrap();
+    let source = SineWave::new(600.0).take_duration(Duration::from_millis(150));
+    stream_handle.play_raw(source.convert_samples()).unwrap();
+
+}
+
 
 fn main() {
     let term = Term::stdout();
@@ -165,9 +204,9 @@ fn main() {
    // let mut level_name = "level1";
   
 //    let mut hero_pos = get_hero_pos(level_name);       
-    load_level("level4");
+    load_level("level1");
     drawlevel::draw();
-    let mut levelindex = 4;
+    let mut levelindex = 1;
 
     loop {
 
@@ -217,7 +256,9 @@ fn main() {
                }
             }
 
-     thread::sleep(Duration::from_millis(50));   
+
+
+//     thread::sleep(Duration::from_millis(50));   
     }
 
 
