@@ -1,196 +1,23 @@
 mod backgroundthread;
 mod levels;
-mod drawlevel;
+mod view;
+mod model;
+mod sound;
 
-use once_cell::sync::Lazy;
-use std::collections::HashMap;
-use std::sync::Mutex;
+//use once_cell::sync::Lazy;
+//use std::collections::HashMap;
+//use std::sync::Mutex;
 use console::Term;
-use console::Style;
-use console::Color;
+//use console::Style;
+//use console::Color;
 use std::thread;
 use std::time::Duration;
-use rodio::{OutputStream, source::SineWave};
-use rodio::Source;
 
 
-
-//use crate::levels::LEVELS;
-use crate::levels::CLEVEL;
-use crate::levels::OLEVEL;
-//use crate::levels::get_current_level;
-use crate::levels::load_level;
-
-struct Position {
-      row: usize,
-      col: usize
-}
-
-
-fn modify_level(row: usize, col: usize, value: char) {
-
-    let mut clevel = CLEVEL.lock().unwrap();
-    if let Some(level) = clevel.get_mut("current_level") {
-
-        level[row][col] = value;
-       }       
-}
-
-fn get_hero_pos() -> Position {
-
-    let mut clevel = CLEVEL.lock().unwrap();
-    if let Some(level) = clevel.get_mut("current_level") {
-    let mut _row = 0;
-    let mut _col = 0;
-
-    for row in level.iter(){
-      for &cell in row.iter() {
-         if cell == '@' //Wall
-         {
-            return Position{row: _row, col: _col};
-         }
-        _col += 1;
-       }
-       _col = 0;
-       _row += 1;
-     } 
-    }
-    //}
-    return Position{row: 0, col: 0}; 
-}
-
-fn update_pos(row: isize, col: isize, mut pos: Position) -> Position {
-
-
-       if row > 0 {
-         pos.row += 1;
-       }
-       else 
-       if row < 0 {
-         pos.row -= 1;
-       }
-
-       if col > 0 {
-         pos.col += 1;
-       }
-       else 
-       if col < 0 {
-         pos.col -= 1;
-       }
-    return pos; 
-}
-
-fn can_step(row: isize, col: isize) -> bool {
-
-    let mut pos = get_hero_pos();       
-
-    let mut clevel = CLEVEL.lock().unwrap();
-    if let Some(level) = clevel.get_mut("current_level") {
-
-
-    pos = update_pos(row, col, pos);  
-
-    if level[pos.row][pos.col] == ' ' || level[pos.row][pos.col] == '.' {
-       return true;
-    }
-    else 
-    if level[pos.row][pos.col] == '$' {
-      pos = update_pos(row, col, pos);  
-      if level[pos.row][pos.col] == ' ' || level[pos.row][pos.col] == '.' {
-        level[pos.row][pos.col] = '$';
-        return true;
-      }
-    }
-    
-   }
-   return false;
-}
-
-fn do_step(row: isize, col: isize) -> bool {
-     if can_step(row, col) {
-     {
-       let mut hero_pos = get_hero_pos();       
-
-       //modify_level(hero_pos.row, hero_pos.col, ' ');
-
-    let mut clevel = CLEVEL.lock().unwrap();
-    if let Some(clevel) = clevel.get_mut("current_level") {
-    let mut olevel = OLEVEL.lock().unwrap();
-    if let Some(olevel) = olevel.get_mut("original_level") {
-
-       if olevel[hero_pos.row][hero_pos.col] != '$' {
-         clevel[hero_pos.row][hero_pos.col] = olevel[hero_pos.row][hero_pos.col];
-       }
-   }
-
-       hero_pos  = update_pos(row, col, hero_pos);  
-
-       clevel[hero_pos.row][hero_pos.col] = '@';
-       step_sound();
-//        bell_sound();
-    }
-
-     }
-   }
-
-                 if check_win() {
-                    load_level("level2");
-                 }  
-
-    drawlevel::draw();          
-    return true;
-}
-
-fn check_win() -> bool {
-    let mut clevel = CLEVEL.lock().unwrap();
-    if let Some(clevel) = clevel.get_mut("current_level") {
-    let mut olevel = OLEVEL.lock().unwrap();
-    if let Some(olevel) = olevel.get_mut("original_level") {
-       for y in (0..20) {
-        for x in (0..30) {
-           if clevel[y][x] == '$' && olevel[y][x] != '.' {
-             return false;
-           }
-        } 
-       }
-     }
-    }
-   return true;
-}
-
-fn step_sound() {
-    let (_stream, stream_handle) = OutputStream::try_default().unwrap();
-    let source = SineWave::new(400.0).take_duration(Duration::from_millis(70));
-    stream_handle.play_raw(source.convert_samples()).unwrap();
-    let source = SineWave::new(300.0).take_duration(Duration::from_millis(50));
-    stream_handle.play_raw(source.convert_samples()).unwrap();
-    let source = SineWave::new(550.0).take_duration(Duration::from_millis(70));
-    stream_handle.play_raw(source.convert_samples()).unwrap();
-    let source = SineWave::new(450.0).take_duration(Duration::from_millis(50));
-    stream_handle.play_raw(source.convert_samples()).unwrap();
-    let source = SineWave::new(400.0).take_duration(Duration::from_millis(70));
-    stream_handle.play_raw(source.convert_samples()).unwrap();
-    let source = SineWave::new(300.0).take_duration(Duration::from_millis(50));
-    stream_handle.play_raw(source.convert_samples()).unwrap();
-
-}
-
-fn bell_sound() {
-    let (_stream, stream_handle) = OutputStream::try_default().unwrap();
-    let source = SineWave::new(1200.0).take_duration(Duration::from_millis(100));
-    stream_handle.play_raw(source.convert_samples()).unwrap();
-    let source = SineWave::new(800.0).take_duration(Duration::from_millis(100));
-    stream_handle.play_raw(source.convert_samples()).unwrap();
-    let source = SineWave::new(1500.0).take_duration(Duration::from_millis(80));
-    stream_handle.play_raw(source.convert_samples()).unwrap();
-    let source = SineWave::new(900.0).take_duration(Duration::from_millis(120));
-    stream_handle.play_raw(source.convert_samples()).unwrap();
-    let source = SineWave::new(1300.0).take_duration(Duration::from_millis(150));
-    stream_handle.play_raw(source.convert_samples()).unwrap();
-    let source = SineWave::new(600.0).take_duration(Duration::from_millis(150));
-    stream_handle.play_raw(source.convert_samples()).unwrap();
-
-}
+//use crate::levels::load_level;
+use crate::model::do_step;
+//use crate::sound::new_level_sound;
+//use crate::sound::new_level_sound2;
 
 
 fn main() {
@@ -204,34 +31,37 @@ fn main() {
    // let mut level_name = "level1";
   
 //    let mut hero_pos = get_hero_pos(level_name);       
-    load_level("level1");
-    drawlevel::draw();
+    levels::load_level("level1");
+    view::draw();
     let mut levelindex = 1;
 
     loop {
 
+            //   print!("{}", levelindex);
             if let Ok(c) = term.read_char() {
-               print!("{}", c);
+              // print!("{}", c);
                if c == 'q' {
                  break;
                }
                else 
                if c == '1' {
                   levelindex = levelindex - 1;
-		  load_level(&format!("level{}", levelindex));
+		  levels::load_level(&format!("level{}", levelindex));
 //                  level_name = "level1";
 //                  hero_pos = get_hero_pos(level_name);       
                   term.clear_screen().unwrap();
-                  drawlevel::draw();
+                  view::draw();
+                  sound::new_level_sound2();
                }
 	       else  	
                if c == '2' {
                   levelindex = levelindex + 1;
-		  load_level(&format!("level{}", levelindex));
+		  levels::load_level(&format!("level{}", levelindex));
                   //level_name = "level2";
                   //hero_pos = get_hero_pos(level_name);       
                   term.clear_screen().unwrap();
-                  drawlevel::draw();
+                  view::draw();
+                  sound::new_level_sound();
 
                }
                else 
@@ -254,6 +84,7 @@ fn main() {
                  do_step(0, 1);     
 //                  drawlevel::draw();                                            
                }
+              view::draw();          
             }
 
 
