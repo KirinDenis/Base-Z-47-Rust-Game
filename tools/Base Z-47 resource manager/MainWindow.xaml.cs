@@ -236,6 +236,28 @@ namespace Base_Z_47_resource_manager
                 File.WriteAllBytes(@"..\..\..\..\..\src\res\logo1.pix", destPixels);
                 ToLog("");
                 ToLog(@"Destination file save to: ..\..\..\..\..\logo1.pix");
+
+                //RUST text image 
+                List<string> imageFile = new List<string>();
+                imageFile.Clear();
+                imageFile.Add("pub fn get() -> [u8; " + (srcPixels.Length / 4 * 3).ToString() + "] {");
+                imageFile.Add("return");
+                imageFile.Add("[");
+                string pix_string = ""; 
+                    for (int i = 0; i < srcPixels.Length; i+=4)
+                {
+                    pix_string += 
+                        srcPixels[i+2].ToString() + ", " +
+                        srcPixels[i+1].ToString() + ", " +
+                        srcPixels[i+0].ToString() + ", " ;
+                }
+                imageFile.Add(pix_string);
+                imageFile.Add("];");
+                
+                imageFile.Add("}");
+                File.WriteAllLines(@"..\..\..\..\..\src\res\image1.rs", imageFile);
+
+                //ENDOF RUST text image
             }
             catch (Exception ex)
             {

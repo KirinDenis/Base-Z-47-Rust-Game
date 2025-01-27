@@ -3,6 +3,7 @@ mod levels;
 mod model;
 mod sound;
 mod view;
+mod images;
 
 //use std::thread;
 //use std::time::Duration;
@@ -19,7 +20,8 @@ const QUIT_KEY: char = 'q';
 
 fn set_level(levelindex: usize) {
     levels::load_level(&format!("level{}", levelindex));
-    view::clear();
+//    view::clear();
+    images::draw(levelindex); 
     view::draw();
     sound::new_level_sound2();
 }
@@ -32,6 +34,8 @@ fn main() {
     let mut levelindex = 1;
     let mut step_result: usize= model::NO_STEP;
     set_level(levelindex);
+
+
     loop {
         let key = view::read_char();
 

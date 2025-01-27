@@ -4,6 +4,8 @@ use console::Style;
 use console::Term;
 use rgb::RGB8;
 use std::thread;
+use crossterm::{ExecutableCommand, terminal};
+use std::io::{self, Write};
 
 use crate::levels::Level;
 use crate::levels::CLEVEL;
@@ -104,6 +106,8 @@ fn get_style(foreground: RGB8, background: RGB8) -> Style {
 
 pub fn init() {
     let term = Term::stdout();
+    
+    io::stdout().execute(terminal::SetSize(200, 125));
     term.clear_screen().unwrap();
     term.hide_cursor();
 }
@@ -355,7 +359,7 @@ fn get_floor_map(hy: usize, hx: usize, is_flag: usize, mut map: Level) -> Level 
 
 fn is_floor(c: char, is_flag: usize) -> bool {
     if is_flag == 0 {
-        if c != '#' && c != '.' && c != 'l' {
+        if c != '#' && /*c != '.' &&*/ c != 'l' {
             true
         } else {
             false
