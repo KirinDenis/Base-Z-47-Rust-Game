@@ -50,6 +50,27 @@ fn get_style(foreground : RGB8, background: RGB8) -> Style {
 }
 
 
+pub fn init() {
+    let term = Term::stdout();
+    term.clear_screen().unwrap();
+    term.hide_cursor();
+}
+
+pub fn clear() {
+     let term = Term::stdout();
+     term.clear_screen().unwrap();
+}
+
+pub fn read_char() -> char {
+ let term = Term::stdout();
+ if let Ok(c) = term.read_char() {
+   return c;
+ }
+ else {
+   return ' ';
+ }
+}
+
 pub fn draw() {
 
     let term = Term::stdout();
