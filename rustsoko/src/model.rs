@@ -96,39 +96,35 @@ fn can_step(row: isize, col: isize) -> bool {
    return false;
 }
 
-pub fn do_step(row: isize, col: isize) -> bool {
-     if can_step(row, col) {
-     {
-       let mut hero_pos = get_hero_pos();       
+pub fn do_step(row: isize, col: isize) -> usize {
+	let mut step_result = 0; 
+	if can_step(row, col) {
+     
+		let mut hero_pos = get_hero_pos();       
 
-       //modify_level(hero_pos.row, hero_pos.col, ' ');
+		let mut clevel = CLEVEL.lock().unwrap();
+		if let Some(clevel) = clevel.get_mut("current_level") {
+			let mut olevel = OLEVEL.lock().unwrap();
+			if let Some(olevel) = olevel.get_mut("original_level") {
 
-    let mut clevel = CLEVEL.lock().unwrap();
-    if let Some(clevel) = clevel.get_mut("current_level") {
-    let mut olevel = OLEVEL.lock().unwrap();
-    if let Some(olevel) = olevel.get_mut("original_level") {
+				if olevel[hero_pos.row][hero_pos.col] != '$' {
+					clevel[hero_pos.row][hero_pos.col] = olevel[hero_pos.row][hero_pos.col];
+				 }
+			}
 
-       if olevel[hero_pos.row][hero_pos.col] != '$' {
-         clevel[hero_pos.row][hero_pos.col] = olevel[hero_pos.row][hero_pos.col];
-       }
-   }
+			 hero_pos  = update_pos(row, col, hero_pos);  
 
-       hero_pos  = update_pos(row, col, hero_pos);  
+			clevel[hero_pos.row][hero_pos.col] = '@';
 
-       clevel[hero_pos.row][hero_pos.col] = '@';
-//       step_sound();
-//        bell_sound();
-    }
+			step_result = 1;
+		 }
+	}
 
-     }
-   }
+	if check_win() {
+		step_result = 2;
+	}  
 
-                 if check_win() {
-                   // load_level("level2");
-                 }  
-
-//    view::draw();          
-    return true;
+       step_result
 }
 
 fn check_win() -> bool {
@@ -147,3 +143,4 @@ fn check_win() -> bool {
     }
    return true;
 }
+

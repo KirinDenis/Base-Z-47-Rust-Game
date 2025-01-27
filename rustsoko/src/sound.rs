@@ -13,34 +13,34 @@ fn play_tone(stream_handle: &rodio::OutputStreamHandle, mut frequency: f32, mut 
 
 }
 
+
 pub fn new_level_sound() {
- let (_stream, stream_handle) = OutputStream::try_default().unwrap();
+	let builder = thread::Builder::new(); 
+	let handle = builder.spawn( move || {
+
+	 let (_stream, stream_handle) = OutputStream::try_default().unwrap();
+	    let melody = [
+	        (392.0, 150), // G4
+	        (494.0, 150), // B4
+	        (587.0, 200), // D5
+	        (784.0, 200), // G5
+	        (698.0, 150), // F5
+	        (659.0, 150), // E5
+	    ];
 
 
-
-
-    let melody = [
-        (392.0, 150), // G4
-        (494.0, 150), // B4
-        (587.0, 200), // D5
-        (784.0, 200), // G5
-        (698.0, 150), // F5
-        (659.0, 150), // E5
-    ];
-
-
-    for &(freq, duration) in &melody {
-        play_tone(&stream_handle, freq, duration);
-        std::thread::sleep(Duration::from_millis(150)); 
-    }
-
+	    for &(freq, duration) in &melody {
+	        play_tone(&stream_handle, freq, duration);
+	        std::thread::sleep(Duration::from_millis(250)); 
+     }
+   }).unwrap();
 }
 
 pub fn new_level_sound2() {
+	let builder = thread::Builder::new(); 
+	let handle = builder.spawn( move || {
+
  let (_stream, stream_handle) = OutputStream::try_default().unwrap();
-
-
-
 
     let melody = [
         (261.63, 150),  // C4
@@ -60,11 +60,15 @@ pub fn new_level_sound2() {
         play_tone(&stream_handle, freq as f32, duration);
         std::thread::sleep(Duration::from_millis(150)); 
     }
+   }).unwrap();
 
 }
 
 
 pub fn step_sound() {
+	let builder = thread::Builder::new(); 
+	let handle = builder.spawn( move || {
+
     let (_stream, stream_handle) = OutputStream::try_default().unwrap();
     let source = SineWave::new(400.0).take_duration(Duration::from_millis(70));
     stream_handle.play_raw(source.convert_samples()).unwrap();
@@ -79,10 +83,13 @@ pub fn step_sound() {
     let source = SineWave::new(300.0).take_duration(Duration::from_millis(50));
     stream_handle.play_raw(source.convert_samples()).unwrap();
     std::thread::sleep(Duration::from_millis(150));
-
+   }).unwrap();
 }
 
 pub fn bell_sound() {
+	let builder = thread::Builder::new(); 
+	let handle = builder.spawn( move || {
+
     let (_stream, stream_handle) = OutputStream::try_default().unwrap();
     let source = SineWave::new(1200.0).take_duration(Duration::from_millis(100));
     stream_handle.play_raw(source.convert_samples()).unwrap();
@@ -97,4 +104,5 @@ pub fn bell_sound() {
     let source = SineWave::new(600.0).take_duration(Duration::from_millis(150));
     stream_handle.play_raw(source.convert_samples()).unwrap();
     std::thread::sleep(Duration::from_millis(250));
+   }).unwrap();
 }
