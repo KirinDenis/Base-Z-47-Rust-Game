@@ -7,6 +7,7 @@ use console::Color;
 use console::Style;
 use console::Term;
 use rgb::RGB8;
+use rand::Rng;
 
 
 pub fn draw(image: usize) {
@@ -33,7 +34,7 @@ pub fn draw(image: usize) {
       pixels = image3::get();
     }
 
-
+    let mut rng = rand::thread_rng();
 
     term.move_cursor_to(0, 0).unwrap();    
 
@@ -43,23 +44,50 @@ pub fn draw(image: usize) {
      
    for i in (0..psize).step_by(lsize*2) {    
      for j in (i..i + lsize).step_by(3) {
+
+
+  let r = rng.gen_range(0..=3);
+if r < 2 {
     	let fc: RGB8 = RGB8 {
-	    r: pixels[j+0],
+	    r: pixels[j+0] ,
 	    g: pixels[j+1]  ,
+	    b: pixels[j+2] ,
+	    };
+
+    	let bc: RGB8 = RGB8 {
+	    r: pixels[j+0 + lsize],
+	    g: pixels[j+1 + lsize]  ,
+	    b: pixels[j+2 + lsize] ,
+	    };
+
+    
+    let style: Style = Style::new()
+        .fg(Color::Color256(ansi256_from_rgb(fc)))
+        .bg(Color::Color256(ansi256_from_rgb(bc)));
+
+    // print!("{}", style.apply_to("\u{2580}"));
+        print!("{}", style.apply_to(rng.gen_range('A'..='F')));
+    }
+    else {
+    	let fc: RGB8 = RGB8 {
+	    r: pixels[j+0] << 1,
+	    g: pixels[j+1] << 1 ,
 	    b: pixels[j+2] << 1,
 	    };
 
     	let bc: RGB8 = RGB8 {
 	    r: pixels[j+0 + lsize],
 	    g: pixels[j+1 + lsize]  ,
-	    b: pixels[j+2 + lsize] << 1,
+	    b: pixels[j+2 + lsize] ,
 	    };
+
+    
     let style: Style = Style::new()
         .fg(Color::Color256(ansi256_from_rgb(fc)))
         .bg(Color::Color256(ansi256_from_rgb(bc)));
 
-
-    print!("{}", style.apply_to("\u{2580}"));
+        print!("{}", style.apply_to(rng.gen_range('0'..='9')));
+    }
 
 
      }

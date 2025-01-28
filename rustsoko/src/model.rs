@@ -3,6 +3,7 @@
 use crate::levels::CLEVEL;
 use crate::levels::OLEVEL;
 use crate::levels::CURRENT_LEVEL_NAME;
+use crate::levels::ORIGINAL_LEVEL_NAME;
 
 use crate::levels::level_const::BASE_CODE;
 use crate::levels::level_const::BOX_CODE;

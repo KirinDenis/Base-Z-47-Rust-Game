@@ -98,18 +98,38 @@ pub const B_WALL_COLOR: RGB8 = RGB8 {
     b: 0x98,
 };
 
+use crate::levels::level_const::L_HEIGHT;
+use crate::levels::level_const::L_WIDTH;
+use crate::levels::level_const::S_WIDTH;
+use crate::levels::level_const::S_HEIGHT;
+
+use crate::levels::level_const::BASE_CODE;
+use crate::levels::level_const::BOX_CODE;
+use crate::levels::level_const::FLOOR_CODE;
+use crate::levels::level_const::HERO_CODE;
+
+
 fn get_style(foreground: RGB8, background: RGB8) -> Style {
     Style::new()
         .fg(Color::Color256(ansi256_from_rgb(foreground)))
         .bg(Color::Color256(ansi256_from_rgb(background)))
 }
 
-pub fn init() {
+pub fn init() -> bool {
     let term = Term::stdout();
+
+    if !term.is_term()  {
+        eprintln!("Terminal detection problem :: please run the program in terminal");
+        return false;
+    }
     
-    io::stdout().execute(terminal::SetSize(200, 125));
+    io::stdout().execute(terminal::SetSize(S_WIDTH, S_HEIGHT)).unwrap();
+
+
     term.clear_screen().unwrap();
-    term.hide_cursor();
+    term.hide_cursor().unwrap();
+
+    true
 }
 
 pub fn clear() {
@@ -126,19 +146,21 @@ pub fn read_char() -> char {
     }
 }
 
-pub fn draw() {
+pub fn draw() -> bool {
     let term = Term::stdout();
     //    let mut buffer = String::new();
     //    let mut buffer: Vec<(u16, u16, String)> = Vec::new();
     let mut buffer: Vec<(usize, usize, String)> = Vec::new();
 
-    if term.is_term() {
-        //let (width, height) = term.size();
-    } else {
-        eprintln!("not term");
-    }
+    
 
     let (_sh, _sw) = term.size();
+    if _sw < S_WIDTH {
+        eprintln!("Terminal detection problem :: please run the program in terminal");
+        return false;
+
+    }
+
     let style: Style = Style::new();
 
     let sw: usize = _sw.into();
@@ -338,10 +360,19 @@ pub fn draw() {
         }
 
         for (x, y, text) in buffer {
+            if x > sw {
+                continue;
+            }
+
+            if y > sh {
+                continue;
+            }
+
             term.move_cursor_to(x, y).unwrap();
             term.write_line(&text).unwrap();
         }
     }
+    true
 }
 
 fn get_floor_map(hy: usize, hx: usize, is_flag: usize, mut map: Level) -> Level {

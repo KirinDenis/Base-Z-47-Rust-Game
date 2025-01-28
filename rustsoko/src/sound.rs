@@ -5,7 +5,7 @@ use rodio::Source;
 
 
 fn play_tone(stream_handle: &rodio::OutputStreamHandle, mut frequency: f32, mut duration_ms: u64) {
-    let source = SineWave::new(frequency).take_duration(Duration::from_millis(duration_ms));
+    let source = SineWave::new(frequency).take_duration(Duration::from_millis(duration_ms)).amplify(0.05);
     stream_handle.play_raw(source.convert_samples()).unwrap();
 
     let source = SineWave::new(frequency+100.0).take_duration(Duration::from_millis(duration_ms-0));
@@ -70,17 +70,17 @@ pub fn step_sound() {
 	let handle = builder.spawn( move || {
 
     let (_stream, stream_handle) = OutputStream::try_default().unwrap();
-    let source = SineWave::new(400.0).take_duration(Duration::from_millis(70));
+    let source = SineWave::new(400.0).take_duration(Duration::from_millis(70)).amplify(0.1);;
     stream_handle.play_raw(source.convert_samples()).unwrap();
-    let source = SineWave::new(300.0).take_duration(Duration::from_millis(50));
+    let source = SineWave::new(300.0).take_duration(Duration::from_millis(50)).amplify(0.1);;
     stream_handle.play_raw(source.convert_samples()).unwrap();
-    let source = SineWave::new(550.0).take_duration(Duration::from_millis(70));
+    let source = SineWave::new(550.0).take_duration(Duration::from_millis(70)).amplify(0.1);;
     stream_handle.play_raw(source.convert_samples()).unwrap();
-    let source = SineWave::new(450.0).take_duration(Duration::from_millis(50));
+    let source = SineWave::new(450.0).take_duration(Duration::from_millis(50)).amplify(0.1);;
     stream_handle.play_raw(source.convert_samples()).unwrap();
-    let source = SineWave::new(400.0).take_duration(Duration::from_millis(70));
+    let source = SineWave::new(400.0).take_duration(Duration::from_millis(70)).amplify(0.1);;
     stream_handle.play_raw(source.convert_samples()).unwrap();
-    let source = SineWave::new(300.0).take_duration(Duration::from_millis(50));
+    let source = SineWave::new(300.0).take_duration(Duration::from_millis(50)).amplify(0.1);;
     stream_handle.play_raw(source.convert_samples()).unwrap();
     std::thread::sleep(Duration::from_millis(150));
    }).unwrap();
@@ -91,11 +91,11 @@ pub fn bell_sound() {
 	let handle = builder.spawn( move || {
 
     let (_stream, stream_handle) = OutputStream::try_default().unwrap();
-    let source = SineWave::new(1200.0).take_duration(Duration::from_millis(100));
+    let source = SineWave::new(1200.0).take_duration(Duration::from_millis(100)).amplify(0.1);;
     stream_handle.play_raw(source.convert_samples()).unwrap();
-    let source = SineWave::new(800.0).take_duration(Duration::from_millis(100));
+    let source = SineWave::new(800.0).take_duration(Duration::from_millis(100)).amplify(0.1);;
     stream_handle.play_raw(source.convert_samples()).unwrap();
-    let source = SineWave::new(1500.0).take_duration(Duration::from_millis(80));
+    let source = SineWave::new(1500.0).take_duration(Duration::from_millis(80)).amplify(0.1);;
     stream_handle.play_raw(source.convert_samples()).unwrap();
     let source = SineWave::new(900.0).take_duration(Duration::from_millis(120));
     stream_handle.play_raw(source.convert_samples()).unwrap();
