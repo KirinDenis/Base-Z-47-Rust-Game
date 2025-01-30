@@ -9,6 +9,7 @@ use std::io::{self, Write};
 
 use crate::levels::Level;
 use crate::levels::CLEVEL;
+use crate::images::image1;
 
 pub const F_LEVEL_COLOR: RGB8 = RGB8 {
     r: 0xF7,
@@ -230,32 +231,8 @@ pub fn draw() -> bool {
         let mut smap: Level = get_floor_map(hy, hx, 1, *level);
         let mut bmap: Level = get_floor_map(hy, hx, 2, *level);
 
-        /*
-        let builder = thread::Builder::new().stack_size(10 * 1024 * 1024);
-        let handle = builder.spawn(move || {
-            fill_level(hy, hx, 0, map)
-        }).unwrap();
-
-        match handle.join() {
-          Ok(result)  => map = result,
-          Err(e) => eprintln!("Error: {:?}", e),
-        }
-
-
-        let builder = thread::Builder::new().stack_size(10 * 1024 * 1024);
-        let handle = builder.spawn(move || {
-            fill_level(hy, hx, 1, smap)
-        }).unwrap();
-
-        match handle.join() {
-          Ok(result)  => smap = result,
-          Err(e) => eprintln!("Error: {:?}", e),
-        }
-        */
-
-        //    let mut clevel = CLEVEL.lock().unwrap();
-        //    if let Some(level) = clevel.get_mut("current_level") {
-
+        let pixels = image1::get();
+         let ls = S_WIDTH * 3;
         //-----------------
         for y in (0..20) {
             if y > _cyb {
@@ -274,14 +251,40 @@ pub fn draw() -> bool {
                 if cell == '#'
                 //Wall
                 {
+//-------------
+/*
+                let mut offset: usize = get_image_offset(y, x);
+    	let fc: RGB8 = RGB8 {
+	    r: pixels[offset+0] << 1,
+	    g: pixels[offset+1] << 1 ,
+	    b: pixels[offset+2] << 1,
+	    };
+
+    	let bc: RGB8 = RGB8 {
+	    r: pixels[offset+0 + usize::from(ls)],
+	    g: pixels[offset+1 + usize::from(ls)]  ,
+	    b: pixels[offset+2 + usize::from(ls)] ,
+	    };
+
+    
+    let style: Style = Style::new()
+        .fg(Color::Color256(ansi256_from_rgb(fc)))
+        .bg(Color::Color256(ansi256_from_rgb(bc)));
+
+*/
                     let style = get_style(F_WALL_COLOR, B_WALL_COLOR);
+
                     buffer.push((
                         sx,
                         sy,
                         style
+
                             .apply_to("\u{2588}\u{2588}\u{2588}\u{2588}\u{2588}")
+
+
                             .to_string(),
                     ));
+ 
                     buffer.push((
                         sx,
                         sy + 1,
@@ -312,6 +315,7 @@ pub fn draw() -> bool {
                         buffer.push((
                             sx,
                             sy,
+                            //style.apply_to(" \u{2554}\u{2550}\u{2557} ").to_string(),
                             style.apply_to(" \u{2554}\u{2550}\u{2557} ").to_string(),
                         ));
                         buffer.push((
@@ -373,6 +377,10 @@ pub fn draw() -> bool {
         }
     }
     true
+}
+
+fn get_image_offset(y: usize, x: usize) -> usize {
+     y * usize::from(S_WIDTH) * 3 + x * 3 
 }
 
 fn get_floor_map(hy: usize, hx: usize, is_flag: usize, mut map: Level) -> Level {

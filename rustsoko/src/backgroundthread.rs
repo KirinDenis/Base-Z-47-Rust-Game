@@ -1,8 +1,11 @@
+
 use console::Term;
 use console::Style;
 use console::Color;
 use std::thread;
 use std::time::Duration;
+
+use crate::images::draw;
 
 pub fn run() {
 
@@ -15,36 +18,10 @@ pub fn run() {
        loop {
 
 
-        term.move_cursor_to(0, 0).unwrap(); 
-    	for c in (0..36) {
+           term.move_cursor_to(0, 0).unwrap(); 
+          draw(2);
 
-
-	   // .bg(Color::Color256(c));
-            let style: Style = Style::new().fg(Color::Color256(c+(c_color*36)+16));
-
-
-	    print!("{}", style.apply_to("0"));
-
-            //thread::sleep(Duration::from_millis(20));          
-          }
-
-          if flag 
-          {
-           c_color +=1;
-           if c_color > 4 {
-              flag = !flag;
-           }
-          }
-          else 
-          {
-            c_color -=1;
-            if c_color < 1 {
-               flag = !flag;             
-            }             
-          }
-	  //  println!("{}", c_color);
-
-          thread::sleep(Duration::from_millis(500));          
+          thread::sleep(Duration::from_millis(1000));          
         }
 
     });

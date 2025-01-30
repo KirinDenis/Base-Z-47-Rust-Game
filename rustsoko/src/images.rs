@@ -1,6 +1,6 @@
-mod image1;
-mod image2;
-mod image3;
+pub mod image1;
+pub mod image2;
+pub mod image3;
 
 use ansi_colours::*;
 use console::Color;
@@ -16,7 +16,10 @@ pub fn draw(image: usize) {
         //let (width, height) = term.size();
     } else {
         eprintln!("not term");
+        return;
     }
+
+    let mut buffer: Vec<(String)> = Vec::new();
 
     let (_sh, _sw) = term.size();
     let style: Style = Style::new();
@@ -43,6 +46,8 @@ pub fn draw(image: usize) {
 
      
    for i in (0..psize).step_by(lsize*2) {    
+     let mut s1: String = Default::default();          
+
      for j in (i..i + lsize).step_by(3) {
 
 
@@ -65,8 +70,9 @@ if r < 2 {
         .fg(Color::Color256(ansi256_from_rgb(fc)))
         .bg(Color::Color256(ansi256_from_rgb(bc)));
 
-    // print!("{}", style.apply_to("\u{2580}"));
-        print!("{}", style.apply_to(rng.gen_range('A'..='F')));
+      //  print!("{}", style.apply_to("\u{2580}"));
+       // print!("{}", style.apply_to(rng.gen_range('A'..='F')));
+      s1.push_str(&style.apply_to("\u{2580}").to_string());
     }
     else {
     	let fc: RGB8 = RGB8 {
@@ -85,15 +91,24 @@ if r < 2 {
     let style: Style = Style::new()
         .fg(Color::Color256(ansi256_from_rgb(fc)))
         .bg(Color::Color256(ansi256_from_rgb(bc)));
-
-        print!("{}", style.apply_to(rng.gen_range('0'..='9')));
+ //       print!("{}", style.apply_to("\u{2580}"));
+//        print!("{}", style.apply_to(rng.gen_range('0'..='9')));
+//         print!("{}", style.apply_to(' '));
+      s1.push_str(&style.apply_to(' ').to_string());
     }
 
 
      }
-
+     buffer.push(s1);
 
    }
+
+        term.move_cursor_to(0, 0).unwrap();
+        for (text) in buffer {
+
+            term.write_line(&text).unwrap();
+        }
+
     
  	
 

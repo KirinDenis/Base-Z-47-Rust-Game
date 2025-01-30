@@ -10,7 +10,7 @@ edition = "2021"
 rand = "0.8.0"
 crossterm = "0.27"
 console = "0.15.0"
-rodio = "0.17"
+rodio = { version = "0.20.1", default-features = false, features = ["symphonia-all"] }
 once_cell = "1.18"
 rgb = "0.8.43"
 ansi_colours = "1.1"
