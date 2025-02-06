@@ -8,6 +8,8 @@ use console::Style;
 use console::Term;
 use rgb::RGB8;
 use rand::Rng;
+use std::env;
+use std::fs;
 
 
 pub fn draw(image: usize) {
@@ -44,6 +46,11 @@ pub fn draw(image: usize) {
     let mut psize = 60000;
     let mut lsize = 200 * 3;
 
+    let contents = fs::read_to_string("assets/image1.txt")
+        .expect("Should have been able to read the file");
+
+    let chars: Vec<char> = contents.chars().collect();
+    let mut count: usize = 0;
      
    for i in (0..psize).step_by(lsize*2) {    
      let mut s1: String = Default::default();          
@@ -51,16 +58,16 @@ pub fn draw(image: usize) {
      for j in (i..i + lsize).step_by(3) {
 
 
-  let r = rng.gen_range(0..=3);
-if r < 2 {
+//  let r = rng.gen_range(0..=3);
+//if r < 2 {
     	let fc: RGB8 = RGB8 {
 	    r: pixels[j+0] ,
-	    g: pixels[j+1]  ,
-	    b: pixels[j+2] ,
+	    g: pixels[j+1]    ,
+	    b: pixels[j+2],
 	    };
 
     	let bc: RGB8 = RGB8 {
-	    r: pixels[j+0 + lsize],
+	    r: pixels[j+0 + lsize] ,
 	    g: pixels[j+1 + lsize]  ,
 	    b: pixels[j+2 + lsize] ,
 	    };
@@ -70,10 +77,13 @@ if r < 2 {
         .fg(Color::Color256(ansi256_from_rgb(fc)))
         .bg(Color::Color256(ansi256_from_rgb(bc)));
 
-      //  print!("{}", style.apply_to("\u{2580}"));
+        //print!("{}", chars[count]);
        // print!("{}", style.apply_to(rng.gen_range('A'..='F')));
-      s1.push_str(&style.apply_to("\u{2580}").to_string());
-    }
+      //s1.push_str(&style.apply_to("\u{2580}").to_string());
+      s1.push_str(&style.apply_to(chars[count]).to_string());
+
+//    }
+/*
     else {
     	let fc: RGB8 = RGB8 {
 	    r: pixels[j+0] << 1,
@@ -94,11 +104,14 @@ if r < 2 {
  //       print!("{}", style.apply_to("\u{2580}"));
 //        print!("{}", style.apply_to(rng.gen_range('0'..='9')));
 //         print!("{}", style.apply_to(' '));
-      s1.push_str(&style.apply_to(' ').to_string());
+      //s1.push_str(&style.apply_to(' ').to_string());
+        s1.push_str(&style.apply_to(chars[count]).to_string());
+
     }
-
-
+*/
+      count=count+1;
      }
+     count=count+2;
      buffer.push(s1);
 
    }

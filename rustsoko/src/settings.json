@@ -1,0 +1,21 @@
+{
+  "profiles": {
+    "defaults": {
+      "fontFace": "Cascadia Code",
+      "fontSize": 14,
+      "colorScheme": "Campbell",
+      "startingDirectory": "C:\\",
+      "tabTitle": "??? ????????"
+    },
+    "list": [
+      {
+        "name": "????????? ??????",
+        "commandline": "cmd.exe",
+        "hidden": false
+      }
+    ]
+  },
+  "schemes": [],
+  "actions": [],
+  "defaultProfile": "{cmd-???????-ID}"
+}

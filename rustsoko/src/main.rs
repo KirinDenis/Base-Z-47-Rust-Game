@@ -27,8 +27,8 @@ const QUIT_KEY: char = 'q';
 
 fn set_level(levelindex: usize) {
     levels::load_level(&format!("level{}", levelindex));
-    //    view::clear();
-    //images::draw(levelindex);
+    view::clear();
+//    images::draw(levelindex);
 
     view::draw();
 
@@ -55,7 +55,7 @@ fn main() {
     for file in &files {
         let file = BufReader::new(File::open(file).unwrap());
         let source = Decoder::new(file).unwrap().repeat_infinite(); 
-        sink.lock().unwrap().append(source);
+  //      sink.lock().unwrap().append(source);
     }
 
     let mut sink = sink.lock().unwrap();
