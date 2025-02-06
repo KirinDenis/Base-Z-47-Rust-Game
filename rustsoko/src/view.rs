@@ -266,7 +266,7 @@ pub fn draw() -> bool {
     true
 }
 
-fn get_floor_map(hy: usize, hx: usize, is_flag: usize, mut map: Level) -> Level {
+fn get_floor_map(hy: usize, hx: usize, is_flag: usize, map: Level) -> Level {
     let builder = thread::Builder::new().stack_size(10 * 1024 * 1024);
     let handle = builder
         .spawn(move || fill_level(hy, hx, is_flag, map))

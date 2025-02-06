@@ -5,16 +5,13 @@ mod model;
 mod sound;
 mod view;
 
-//use std::thread;
-//use std::time::Duration;
 
+/* //Background sound
 use rodio::{Decoder, OutputStream, Sink, Source};
 use std::fs::File;
 use std::io::BufReader;
 use std::sync::{Arc, Mutex};
-use std::thread;
-use std::time::Duration;
-
+ */
 
 use crate::model::do_step;
 
@@ -28,7 +25,7 @@ const QUIT_KEY: char = 'q';
 fn set_level(levelindex: usize) {
     levels::load_level(&format!("level{}", levelindex));
     view::clear();
-//    images::draw(levelindex);
+    images::draw(levelindex);
 
     view::draw();
 
@@ -46,7 +43,7 @@ fn main() {
     let mut step_result: usize = model::NO_STEP;
     set_level(levelindex);
 
-
+/*  //Background sound play
     let (_stream, handle) = OutputStream::try_default().unwrap();
     let sink = Arc::new(Mutex::new(Sink::try_new(&handle).unwrap()));
 
@@ -55,12 +52,12 @@ fn main() {
     for file in &files {
         let file = BufReader::new(File::open(file).unwrap());
         let source = Decoder::new(file).unwrap().repeat_infinite(); 
-  //      sink.lock().unwrap().append(source);
+        sink.lock().unwrap().append(source);
     }
 
     let mut sink = sink.lock().unwrap();
     sink.set_volume(0.4); 
-
+*/
 
     loop {
         let key = view::read_char();
@@ -75,7 +72,7 @@ fn main() {
         } else if key == '2' {
             levelindex = levelindex + 1;
             set_level(levelindex);
-        } else if key == 'p' {        
+        } else /*if key == 'p' {        
 		if sink.is_paused() {
                         sink.play();                
                     } else {
@@ -87,7 +84,7 @@ fn main() {
         } else if key == '-' {
             let vol = sink.volume() - 0.1;
             sink.set_volume(vol.max(0.0)); 
-        } else if key == UP_KEY {
+        } else */if key == UP_KEY {
             step_result = do_step(-1, 0);
         } else if key == DOWN_KEY {
             step_result = do_step(1, 0);

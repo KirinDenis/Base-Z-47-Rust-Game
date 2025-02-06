@@ -1,14 +1,14 @@
+pub mod image0;
 pub mod image1;
 pub mod image2;
 pub mod image3;
+pub mod image4;
 
 use ansi_colours::*;
 use console::Color;
 use console::Style;
 use console::Term;
 use rgb::RGB8;
-use rand::Rng;
-use std::env;
 use std::fs;
 
 
@@ -21,30 +21,38 @@ pub fn draw(image: usize) {
         return;
     }
 
-    let mut buffer: Vec<(String)> = Vec::new();
+    let mut buffer: Vec<String> = Vec::new();
 
     let (_sh, _sw) = term.size();
-    let style: Style = Style::new();
-
+    
     let pixels;
+
+    if image == 0 { 
+      pixels = image0::get();
+    }
+    else 
     if image == 1 { 
-      pixels = image1::get();
+      pixels = image0::get();
     }
     else 
     if image == 2 { 
       pixels = image2::get();
     }
     else 
-    {
+    if image == 3 { 
       pixels = image3::get();
     }
+    else 
+    {
+      pixels = image4::get();
+    }
 
-    let mut rng = rand::thread_rng();
+    //let rng = rand::thread_rng();
 
     term.move_cursor_to(0, 0).unwrap();    
 
-    let mut psize = 60000;
-    let mut lsize = 200 * 3;
+    let psize = 60000;
+    let lsize = 200 * 3;
 
     let contents = fs::read_to_string("assets/image1.txt")
         .expect("Should have been able to read the file");
@@ -79,8 +87,8 @@ pub fn draw(image: usize) {
 
         //print!("{}", chars[count]);
        // print!("{}", style.apply_to(rng.gen_range('A'..='F')));
-      //s1.push_str(&style.apply_to("\u{2580}").to_string());
-      s1.push_str(&style.apply_to(chars[count]).to_string());
+      s1.push_str(&style.apply_to("\u{2580}").to_string());
+      //s1.push_str(&style.apply_to(chars[count]).to_string());
 
 //    }
 /*
@@ -117,8 +125,7 @@ pub fn draw(image: usize) {
    }
 
         term.move_cursor_to(0, 0).unwrap();
-        for (text) in buffer {
-
+        for text in buffer {
             term.write_line(&text).unwrap();
         }
 

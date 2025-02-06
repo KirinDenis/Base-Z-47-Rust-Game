@@ -1,9 +1,6 @@
-
-
 use crate::levels::CLEVEL;
-use crate::levels::OLEVEL;
 use crate::levels::CURRENT_LEVEL_NAME;
-use crate::levels::ORIGINAL_LEVEL_NAME;
+use crate::levels::OLEVEL;
 
 use crate::levels::level_const::BASE_CODE;
 use crate::levels::level_const::BOX_CODE;
@@ -11,7 +8,6 @@ use crate::levels::level_const::FLOOR_CODE;
 use crate::levels::level_const::HERO_CODE;
 use crate::levels::level_const::L_HEIGHT;
 use crate::levels::level_const::L_WIDTH;
-
 
 pub const NO_STEP: usize = 0;
 pub const CAN_STEP: usize = 1;
@@ -43,7 +39,7 @@ fn get_hero_pos() -> Position {
             _col = 0;
             _row += 1;
         }
-    }    
+    }
     return Position { row: 0, col: 0 };
 }
 

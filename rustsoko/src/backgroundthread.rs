@@ -1,7 +1,5 @@
 
 use console::Term;
-use console::Style;
-use console::Color;
 use std::thread;
 use std::time::Duration;
 
@@ -10,10 +8,9 @@ use crate::images::draw;
 pub fn run() {
 
     thread::spawn(|| {
-
-       let mut c_color = 1;
+       
        let term = Term::stdout();
-       let mut flag = true;
+       
  
        loop {
 
