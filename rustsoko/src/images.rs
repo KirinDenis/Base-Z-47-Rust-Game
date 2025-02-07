@@ -51,7 +51,7 @@ pub fn draw(image: usize) {
 
     term.move_cursor_to(0, 0).unwrap();    
 
-    let psize = 60000;
+    let psize = 57000;
     let lsize = 200 * 3;
 
     let contents = fs::read_to_string("assets/image1.txt")

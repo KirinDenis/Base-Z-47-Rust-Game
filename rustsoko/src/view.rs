@@ -31,17 +31,27 @@ const IS_BOX_MAP: usize = 2;
 const WALL_DRAW_UP: &str = "\u{2588}\u{2588}\u{2588}\u{2588}\u{2588}";
 const WALL_DRAW_DN: &str = "\u{2588}\u{2588}\u{2588}\u{2588}\u{2588}";
 
+const WALL_DRAW_SMALL: &str = "\u{2588}\u{2588}";
+
 const BASE_DRAW_UP: &str = " \u{250C}\u{2500}\u{2510} ";
 const BASE_DRAW_DN: &str = " \u{2514}\u{2500}\u{2518} ";
+
+const BASE_DRAW_SMALL: &str = "  ";
 
 const BOX_DRAW_UP: &str = " \u{2554}\u{2550}\u{2557} ";
 const BOX_DRAW_DN: &str = " \u{255A}\u{2550}\u{255D} ";
 
+const BOX_DRAW_SMALL: &str = "  ";
+
 const HERO_DRAW_UP: &str = "\u{2571}\u{2554}\u{2500}\u{2557}\u{2572}";
 const HERO_DRAW_DN: &str = "\u{2572}\u{255A}\u{2500}\u{255D}\u{2571}";
 
+const HERO_DRAW_SMALL: &str = "\u{2571}\u{2572}";
+
 const FLOOR_DRAW_UP: &str = "     ";
 const FLOOR_DRAW_DN: &str = "     ";
+
+const FLOOR_DRAW_SMALL: &str = "  ";
 
 #[rustfmt::skip]
 pub const F_FLOOR_COLOR: RGB8 = RGB8 {r: 0xF7, g: 0xF0, b: 0xD4,};
@@ -124,6 +134,10 @@ pub fn read_char() -> char {
 }
 
 pub fn draw() -> bool {
+    custom_draw(0, 0, false)
+}
+
+pub fn custom_draw(offset_x: usize, offset_y: usize, small: bool) -> bool {
     let term = Term::stdout();
 
     let mut buffer: Vec<(usize, usize, String)> = Vec::new();
@@ -198,53 +212,94 @@ pub fn draw() -> bool {
         for y in 0.._count_y_buttom {
             for x in 0.._count_x_rigth {
                 let cell = level[y][x];
-                let sx = x * 5 + width;
-                let sy = y * 2 + height;
+
+                let sx: usize;
+                let sy: usize;
+                if small 
+                {
+                    sx = x * 2;
+                    sy = y ;    
+                } else {
+                  sx = x * 5 + width;
+                  sy = y * 2 + height;
+                }
 
                 if cell == WALL_CODE
                 //Wall
                 {
                     let style = get_style(F_WALL_COLOR, B_WALL_COLOR);
 
-                    buffer.push((sx, sy, style.apply_to(WALL_DRAW_UP).to_string()));
-
-                    buffer.push((sx, sy + 1, style.apply_to(WALL_DRAW_DN).to_string()));
+                    if small {
+                        buffer.push((sx, sy, style.apply_to(WALL_DRAW_SMALL).to_string()));
+                    } else {
+                        buffer.push((sx, sy, style.apply_to(WALL_DRAW_UP).to_string()));
+                        buffer.push((sx, sy + 1, style.apply_to(WALL_DRAW_DN).to_string()));
+                    }
                 } else if cell == BASE_CODE
                 //Base
                 {
                     let style = get_style(F_BASE_COLOR, B_BASE_COLOR);
 
-                    buffer.push((sx, sy, style.apply_to(BASE_DRAW_UP).to_string()));
-                    buffer.push((sx, sy + 1, style.apply_to(BASE_DRAW_DN).to_string()));
+                    if small {
+                        buffer.push((sx, sy, style.apply_to(BASE_DRAW_SMALL).to_string()));
+                    } else {
+                        buffer.push((sx, sy, style.apply_to(BASE_DRAW_UP).to_string()));
+                        buffer.push((sx, sy + 1, style.apply_to(BASE_DRAW_DN).to_string()));
+                    }
                 } else if cell == BOX_CODE
                 //Box
                 {
                     if bmap[y][x] == LEVEL_CODE {
                         let style = get_style(F_SBLOCK_COLOR, B_SBLOCK_COLOR);
-                        buffer.push((sx, sy, style.apply_to(BOX_DRAW_UP).to_string()));
-                        buffer.push((sx, sy + 1, style.apply_to(BOX_DRAW_DN).to_string()));
+
+                        if small {
+                            buffer.push((sx, sy, style.apply_to(BOX_DRAW_SMALL).to_string()));
+                        } else {
+                            buffer.push((sx, sy, style.apply_to(BOX_DRAW_UP).to_string()));
+                            buffer.push((sx, sy + 1, style.apply_to(BOX_DRAW_DN).to_string()));
+                        }
                     } else {
                         let style = get_style(F_BLOCK_COLOR, B_BLOCK_COLOR);
-                        buffer.push((sx, sy, style.apply_to(BOX_DRAW_UP).to_string()));
-                        buffer.push((sx, sy + 1, style.apply_to(BOX_DRAW_DN).to_string()));
+
+                        if small {
+                            buffer.push((sx, sy, style.apply_to(BOX_DRAW_SMALL).to_string()));
+                        } else {
+                            buffer.push((sx, sy, style.apply_to(BOX_DRAW_UP).to_string()));
+                            buffer.push((sx, sy + 1, style.apply_to(BOX_DRAW_DN).to_string()));
+                        }
                     }
                 } else if cell == HERO_CODE
                 //Hero
                 {
                     let style = get_style(F_HERO_COLOR, B_HERO_COLOR);
-                    buffer.push((sx, sy, style.apply_to(HERO_DRAW_UP).to_string()));
-                    buffer.push((sx, sy + 1, style.apply_to(HERO_DRAW_DN).to_string()));
+
+                    if small {
+                        buffer.push((sx, sy, style.apply_to(HERO_DRAW_SMALL).to_string()));
+                    } else {
+                        buffer.push((sx, sy, style.apply_to(HERO_DRAW_UP).to_string()));
+                        buffer.push((sx, sy + 1, style.apply_to(HERO_DRAW_DN).to_string()));
+                    }
                 } else
                 //Default space
                 {
                     if smap[y][x] == LEVEL_CODE {
                         let style = get_style(F_SFLOOR_COLOR, B_SFLOOR_COLOR);
-                        buffer.push((sx, sy, style.apply_to(FLOOR_DRAW_UP).to_string()));
-                        buffer.push((sx, sy + 1, style.apply_to(FLOOR_DRAW_DN).to_string()));
+
+                        if small {
+                            buffer.push((sx, sy, style.apply_to(FLOOR_DRAW_SMALL).to_string()));
+                        } else {
+                            buffer.push((sx, sy, style.apply_to(FLOOR_DRAW_UP).to_string()));
+                            buffer.push((sx, sy + 1, style.apply_to(FLOOR_DRAW_DN).to_string()));
+                        }
                     } else if map[y][x] == LEVEL_CODE {
                         let style = get_style(F_FLOOR_COLOR, B_FLOOR_COLOR);
-                        buffer.push((sx, sy, style.apply_to(FLOOR_DRAW_UP).to_string()));
-                        buffer.push((sx, sy + 1, style.apply_to(FLOOR_DRAW_DN).to_string()));
+
+                        if small {
+                            buffer.push((sx, sy, style.apply_to(FLOOR_DRAW_SMALL).to_string()));
+                        } else {
+                            buffer.push((sx, sy, style.apply_to(FLOOR_DRAW_UP).to_string()));
+                            buffer.push((sx, sy + 1, style.apply_to(FLOOR_DRAW_DN).to_string()));
+                        }
                     }
                 }
             }
@@ -259,7 +314,7 @@ pub fn draw() -> bool {
                 continue;
             }
 
-            term.move_cursor_to(x, y).unwrap();
+            term.move_cursor_to(x + offset_x, y + offset_y).unwrap();
             term.write_line(&text).unwrap();
         }
     }
