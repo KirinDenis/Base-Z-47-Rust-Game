@@ -3,6 +3,7 @@ use console::Color;
 use console::Style;
 use console::Term;
 use crossterm::{terminal, ExecutableCommand};
+use crossterm::event::{self, KeyCode, KeyEvent, KeyModifiers};
 use rgb::RGB8;
 use std::io::{self};
 use std::thread;
@@ -135,13 +136,14 @@ pub fn clear() {
     term.clear_screen().unwrap();
 }
 
-pub fn read_char() -> char {
+pub fn read_char() -> KeyCode {
     let term = Term::stdout();
-    if let Ok(c) = term.read_char() {
-        return c;
-    } else {
-        return FLOOR_CODE;
-    }
+    if let Ok(event::Event::Key(KeyEvent { code, modifiers, kind, .. })) = event::read() {
+            if kind == event::KeyEventKind::Press {
+            return code;
+            }
+        }
+    return  KeyCode::Char('_');
 }
 
 pub fn draw() -> bool {
@@ -356,13 +358,13 @@ pub fn custom_draw(offset_x: usize, offset_y: usize, level_number: usize, small:
              let s_height: usize = (S_HEIGHT).into();
              term.move_cursor_to(0, s_height-1).unwrap();        
 
-             let style = get_style(F_FLOOR_COLOR, B_SELECTED_COLOR);
+             let style = get_style(B_FLOOR_COLOR, B_SELECTED_COLOR);
              for x in 0..S_WIDTH {
                 print!("{}", style.apply_to(" "));                  
              }
              term.move_cursor_to(0, s_height-1).unwrap();        
-             let message = "LEVEL ";
-             print!("{}{level_number}", style.apply_to(message));                  
+             print!("{} {level_number} ", style.apply_to(" :: LEVEL "));                  
+             print!("{}", style.apply_to(" :: use row keys for select/move level, Enter/Space to play, ESC to quit, '+/-/p' for music control :: "));                  
         }
     }
     true

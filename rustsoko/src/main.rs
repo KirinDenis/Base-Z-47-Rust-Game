@@ -5,23 +5,27 @@ mod model;
 mod sound;
 mod view;
 
-/* //Background sound
+ //Background sound
 use rodio::{Decoder, OutputStream, Sink, Source};
 use std::fs::File;
 use std::io::BufReader;
 use std::sync::{Arc, Mutex};
- */
+
 
 use levels::level_const::S_WIDTH;
 
 use crate::model::do_step;
 
-const UP_KEY: char = 'w';
-const DOWN_KEY: char = 's';
-const LEFT_KEY: char = 'a';
-const RIGHT_KEY: char = 'd';
+use crossterm::event::KeyCode;
 
-const QUIT_KEY: char = 'q';
+
+const UP_KEY: KeyCode = KeyCode::Up;
+const DOWN_KEY: KeyCode = KeyCode::Down;
+const LEFT_KEY: KeyCode = KeyCode::Left;
+const RIGHT_KEY: KeyCode = KeyCode::Right;
+
+const SELECT_KEY: KeyCode = KeyCode::Enter;
+const QUIT_KEY: KeyCode = KeyCode::Esc;
 
 fn set_level(levelindex: usize) {
     levels::load_level(&format!("level{}", levelindex));
@@ -57,7 +61,7 @@ fn main() {
     let mut step_result: usize = model::NO_STEP;
     select_level(levelindex);
 
-    /*  //Background sound play
+   //Background sound play
         let (_stream, handle) = OutputStream::try_default().unwrap();
         let sink = Arc::new(Mutex::new(Sink::try_new(&handle).unwrap()));
 
@@ -72,29 +76,29 @@ fn main() {
         let mut sink = sink.lock().unwrap();
         sink.set_volume(0.4);
 
-    /*if key == 'p' {
+    
+
+    loop {
+        let key = view::read_char();
+
+        if key == KeyCode::Char('_') {
+            continue;
+        }
+
+        if key == KeyCode::Char('p') {
             if sink.is_paused() {
                             sink.play();
                         } else {
                             sink.pause();
                         }
-            } else if key == '+' {
+            } else if key == KeyCode::Char('+') {
                 let vol = sink.volume() + 0.1;
                 sink.set_volume(vol.max(1.0));
-            } else if key == '-' {
+            } else if key == KeyCode::Char('-') {
                 let vol = sink.volume() - 0.1;
                 sink.set_volume(vol.max(0.0));
-            } else */
-    */
-
-    loop {
-        let key = view::read_char();
-
-        if key == QUIT_KEY {
-            break;
-        } else if key == ' ' {
-            continue;
-        }
+            } 
+ 
 
         if mode == 0 {
             if key == LEFT_KEY {
@@ -103,15 +107,17 @@ fn main() {
             } else if key == RIGHT_KEY {
                 levelindex = levelindex + 1;
                 select_level(levelindex);
-            }else if key == UP_KEY {
+            }else if key == SELECT_KEY || key == KeyCode::Char(' ') {
                 mode = 1;
                 set_level(levelindex);
+            }else if key == QUIT_KEY {            
+            break;
             }
         } else {
-            if key == '1' {
+            if key == KeyCode::Char('1') {
                 levelindex = levelindex - 1;
                 set_level(levelindex);
-            } else if key == '2' {
+            } else if key == KeyCode::Char('2') {
                 levelindex = levelindex + 1;
                 set_level(levelindex);
             } else if key == UP_KEY {
@@ -122,7 +128,11 @@ fn main() {
                 step_result = do_step(0, -1);
             } else if key == RIGHT_KEY {
                 step_result = do_step(0, 1);
+            }if key == QUIT_KEY {            
+                mode = 0;
+               select_level(levelindex);
             }
+
 
             if step_result == model::NO_STEP {
                 //  sound::bell_sound();
