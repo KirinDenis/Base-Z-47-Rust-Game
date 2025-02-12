@@ -54,46 +54,57 @@ const FLOOR_DRAW_DN: &str = "     ";
 const FLOOR_DRAW_SMALL: &str = "  ";
 
 #[rustfmt::skip]
-pub const F_FLOOR_COLOR: RGB8 = RGB8 {r: 0xF7, g: 0xF0, b: 0xD4,};
+//pub const F_FLOOR_COLOR: RGB8 = RGB8 {r: 0xF7, g: 0xF0, b: 0xD4,};
+pub const F_FLOOR_COLOR: RGB8 = RGB8 {r: 216, g: 253, b: 184,};
 
 #[rustfmt::skip]
-pub const B_FLOOR_COLOR: RGB8 = RGB8 {r: 0xE7, g: 0xE0, b: 0xC4,};
+pub const B_FLOOR_COLOR: RGB8 = RGB8 {r: 216, g: 253, b: 184,};
 
 #[rustfmt::skip]
-pub const F_SFLOOR_COLOR: RGB8 = RGB8 {r: 0xF7, g: 0xF0, b: 0xD4,};
+pub const F_SFLOOR_COLOR: RGB8 = RGB8 {r: 190, g: 0xFF, b: 125,};
 
 #[rustfmt::skip]
-pub const B_SFLOOR_COLOR: RGB8 = RGB8 {r: 0xF7, g: 0xF0, b: 0xD4,};
+pub const B_SFLOOR_COLOR: RGB8 = RGB8 {r: 190, g: 0xFF, b: 125,};
 
 #[rustfmt::skip]
-pub const F_HERO_COLOR: RGB8 = RGB8 {r: 0xF7, g: 0xF0, b: 0xD4,};
+//pub const F_HERO_COLOR: RGB8 = RGB8 {r: 0xF7, g: 0xF0, b: 0xD4,};
+pub const F_HERO_COLOR: RGB8 = RGB8 {r: 216, g: 253, b: 184,};
 
 #[rustfmt::skip]
-pub const B_HERO_COLOR: RGB8 = RGB8 {r: 0xC2, g: 0x14, b: 0x60,};
+//pub const B_HERO_COLOR: RGB8 = RGB8 {r: 0xC2, g: 0x14, b: 0x60,};
+pub const B_HERO_COLOR: RGB8 = RGB8 {r: 255, g: 65, b: 0,};
 
 #[rustfmt::skip]
+//pub const F_BLOCK_COLOR: RGB8 = RGB8 {r: 0x34, g: 0x7B, b: 0x98,};
 pub const F_BLOCK_COLOR: RGB8 = RGB8 {r: 0x34, g: 0x7B, b: 0x98,};
 
 #[rustfmt::skip]
-pub const B_BLOCK_COLOR: RGB8 = RGB8 {r: 0xFC, g: 0xCB, b: 0x1A,};
+//pub const B_BLOCK_COLOR: RGB8 = RGB8 {r: 0xFC, g: 0xCB, b: 0x1A,};
+pub const B_BLOCK_COLOR: RGB8 = RGB8 {r: 255, g: 190, b: 0,};
 
 #[rustfmt::skip]
 pub const F_SBLOCK_COLOR: RGB8 = RGB8 {r: 0x34, g: 0x7B, b: 0x98,};
 
 #[rustfmt::skip]
-pub const B_SBLOCK_COLOR: RGB8 = RGB8 {r: 0xEC, g: 0xBB, b: 0x0A,};
+pub const B_SBLOCK_COLOR: RGB8 = RGB8 {r: 255, g: 125, b: 0,};
 
 #[rustfmt::skip]
 pub const F_BASE_COLOR: RGB8 = RGB8 {r: 0xC2, g: 0x14, b: 0x60,};
 
 #[rustfmt::skip]
-pub const B_BASE_COLOR: RGB8 = RGB8 {r: 0xF7, g: 0xF0, b: 0xD4,};
+pub const B_BASE_COLOR: RGB8 = RGB8 {r: 216, g: 253, b: 184,};
 
 #[rustfmt::skip]
-pub const F_WALL_COLOR: RGB8 = RGB8 {r: 0x34, g: 0x7B, b: 0x98,};
+//pub const F_WALL_COLOR: RGB8 = RGB8 {r: 0x34, g: 0x7B, b: 0x98,};
+pub const F_WALL_COLOR: RGB8 = RGB8 {r: 85, g: 85, b: 0xFF,};
 
 #[rustfmt::skip]
-pub const B_WALL_COLOR: RGB8 = RGB8 {r: 0x34, g: 0x7B, b: 0x98,};
+//pub const B_WALL_COLOR: RGB8 = RGB8 {r: 0x34, g: 0x7B, b: 0x98,};
+pub const B_WALL_COLOR: RGB8 = RGB8 {r: 85, g: 85, b: 255,};
+
+#[rustfmt::skip]
+pub const B_SELECTED_COLOR: RGB8 = RGB8 {r: 255, g: 85, b: 85,};
+
 
 fn get_style(foreground: RGB8, background: RGB8) -> Style {
     Style::new()
@@ -134,10 +145,10 @@ pub fn read_char() -> char {
 }
 
 pub fn draw() -> bool {
-    custom_draw(0, 0, false)
+    custom_draw(0, 0, 0, false, false)
 }
 
-pub fn custom_draw(offset_x: usize, offset_y: usize, small: bool) -> bool {
+pub fn custom_draw(offset_x: usize, offset_y: usize, level_number: usize, small: bool, selected: bool) -> bool {
     let term = Term::stdout();
 
     let mut buffer: Vec<(usize, usize, String)> = Vec::new();
@@ -209,8 +220,11 @@ pub fn custom_draw(offset_x: usize, offset_y: usize, small: bool) -> bool {
         let smap: Level = get_floor_map(hero_y, hero_x, IS_FLOOR_MAP, *level);
         let bmap: Level = get_floor_map(hero_y, hero_x, IS_BOX_MAP, *level);
 
-        for y in 0.._count_y_buttom {
-            for x in 0.._count_x_rigth {
+       for y in 0.._count_y_buttom {
+           for x in 0.._count_x_rigth {
+//     for y in 0.._count_y_buttom {
+//            for x in 0..30 {
+
                 let cell = level[y][x];
 
                 let sx: usize;
@@ -301,9 +315,25 @@ pub fn custom_draw(offset_x: usize, offset_y: usize, small: bool) -> bool {
                             buffer.push((sx, sy + 1, style.apply_to(FLOOR_DRAW_DN).to_string()));
                         }
                     }
+		    else 
+                    if selected { 	
+                        let style = get_style(F_FLOOR_COLOR, B_SELECTED_COLOR);
+                        buffer.push((sx, sy, style.apply_to(FLOOR_DRAW_SMALL).to_string()));
+                    }
                 }
             }
         }
+     
+        let mut _offset_y = offset_y;
+        if small {
+             _offset_y = _offset_y + (L_HEIGHT / 2 - _count_y_buttom / 2);
+        }
+
+        let mut _offset_x = offset_x;
+        if small {
+             _offset_x = _offset_x + (L_WIDTH / 2  - _count_x_rigth / 2);
+        }
+
 
         for (x, y, text) in buffer {
             if x > screen_width {
@@ -314,8 +344,25 @@ pub fn custom_draw(offset_x: usize, offset_y: usize, small: bool) -> bool {
                 continue;
             }
 
-            term.move_cursor_to(x + offset_x, y + offset_y).unwrap();
+
+            term.move_cursor_to(x + _offset_x, y + _offset_y).unwrap();
+                        
             term.write_line(&text).unwrap();
+        }
+
+
+        if small && selected {
+
+             let s_height: usize = (S_HEIGHT).into();
+             term.move_cursor_to(0, s_height-1).unwrap();        
+
+             let style = get_style(F_FLOOR_COLOR, B_SELECTED_COLOR);
+             for x in 0..S_WIDTH {
+                print!("{}", style.apply_to(" "));                  
+             }
+             term.move_cursor_to(0, s_height-1).unwrap();        
+             let message = "LEVEL ";
+             print!("{}{level_number}", style.apply_to(message));                  
         }
     }
     true

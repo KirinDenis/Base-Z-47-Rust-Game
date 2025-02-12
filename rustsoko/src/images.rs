@@ -51,7 +51,7 @@ pub fn draw(image: usize) {
 
     term.move_cursor_to(0, 0).unwrap();    
 
-    let psize = 57000;
+    let psize = 56000;
     let lsize = 200 * 3;
 
     let contents = fs::read_to_string("assets/image1.txt")
@@ -88,6 +88,8 @@ pub fn draw(image: usize) {
         //print!("{}", chars[count]);
        // print!("{}", style.apply_to(rng.gen_range('A'..='F')));
       s1.push_str(&style.apply_to("\u{2580}").to_string());
+//      s1.push_str(&style.apply_to({bc}).to_string());
+      //^^^Print colors
       //s1.push_str(&style.apply_to(chars[count]).to_string());
 
 //    }

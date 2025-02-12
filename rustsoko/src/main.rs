@@ -35,13 +35,13 @@ fn set_level(levelindex: usize) {
 
 fn select_level(levelindex: usize) {
     images::draw(0);
-    let mut x_offset = 30;
+    let mut x_offset = 10;
     let y_offset = 25;
     for i in levelindex..levelindex + 3 {
         levels::load_level(&format!("level{}", i));
-        view::custom_draw(x_offset, y_offset, true);
+        view::custom_draw(x_offset, y_offset, i, true, i == levelindex);
 
-        x_offset = x_offset + 50;
+        x_offset = x_offset + 60;
     }
     //    sound::new_level_sound2();
 }
