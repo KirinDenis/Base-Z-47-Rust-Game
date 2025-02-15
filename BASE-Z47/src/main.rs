@@ -9,14 +9,8 @@ use rodio::{Decoder, OutputStream, Sink, Source};
 use std::fs::File;
 use std::io::BufReader;
 use std::sync::{Arc, Mutex};
-use std::thread;
-use std::time::Duration;
-
-
-use levels::level_const::S_WIDTH;
 
 use crate::model::do_step;
-
 use crossterm::event::KeyCode;
 
 
@@ -30,7 +24,7 @@ const QUIT_KEY: KeyCode = KeyCode::Esc;
 
 
 fn select_level(levelindex: usize) {
-    view::draw_image(0, 0);
+    view::draw_image(0);
     let mut x_offset = 10;
     let y_offset = 25;
     for i in levelindex..levelindex + 3 {
@@ -42,13 +36,6 @@ fn select_level(levelindex: usize) {
     //    sound::new_level_sound2();
 }
 
-fn intro() {
-    for i in (0..8).rev() {
-        view::draw_image(0, i);
-        thread::sleep(Duration::from_millis(500));   
-    }
-
-}
 
 
 fn main() {
@@ -56,7 +43,7 @@ fn main() {
     if !view::init() {
         return;
     }
-    intro(); 
+    view::intro_image(0); 
 
 
     //backgroundthread::run();
@@ -77,8 +64,8 @@ fn main() {
             sink.lock().unwrap().append(source);
         }
 
-        let mut sink = sink.lock().unwrap();
-        sink.set_volume(0.4);
+        let sink = sink.lock().unwrap();
+        sink.set_volume(0.1);
 
     
 
