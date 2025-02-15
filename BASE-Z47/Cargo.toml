@@ -1,6 +1,3 @@
-[build]
-rustflags = ["--cap-lints=allow"]
-
 [package]
 name = "basez47"
 version = "1.0.0"

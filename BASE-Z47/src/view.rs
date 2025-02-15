@@ -8,20 +8,17 @@ use ansi_colours::*;
 use console::Color;
 use console::Style;
 use console::Term;
+use crossterm::event::{self, KeyCode, KeyEvent};
 use crossterm::{terminal, ExecutableCommand};
-use crossterm::event::{self, KeyCode, KeyEvent, KeyModifiers};
 use rgb::RGB8;
 use std::io::{self};
 use std::thread;
-use std::fs;
-
-use ansi_colours::*;
-
+use std::time::Duration;
 
 use crate::levels::level_const::WALL_CODE;
+use crate::levels::load_level;
 use crate::levels::Level;
 use crate::levels::CLEVEL;
-use crate::levels::load_level;
 
 use crate::levels::level_const::L_HEIGHT;
 use crate::levels::level_const::L_WIDTH;
@@ -117,7 +114,6 @@ pub const B_WALL_COLOR: RGB8 = RGB8 {r: 85, g: 85, b: 255,};
 #[rustfmt::skip]
 pub const B_SELECTED_COLOR: RGB8 = RGB8 {r: 255, g: 85, b: 85,};
 
-
 fn get_style(foreground: RGB8, background: RGB8) -> Style {
     Style::new()
         .fg(Color::Color256(ansi256_from_rgb(foreground)))
@@ -142,37 +138,32 @@ pub fn init() -> bool {
     true
 }
 
-pub fn clear() {
-    let term = Term::stdout();
-    term.clear_screen().unwrap();
-}
-
 pub fn read_char() -> KeyCode {
-    let term = Term::stdout();
-    if let Ok(event::Event::Key(KeyEvent { code, modifiers, kind, .. })) = event::read() {
-            if kind == event::KeyEventKind::Press {
+    if let Ok(event::Event::Key(KeyEvent { code, kind, .. })) = event::read() {
+        if kind == event::KeyEventKind::Press {
             return code;
-            }
         }
-    return  KeyCode::Char('_');
+    }
+    return KeyCode::Char('_');
 }
 
 pub fn set_level(levelindex: usize) {
     load_level(&format!("level{}", levelindex));
- //   view::clear();
-    draw_image(levelindex, 2);
-
+    intro_image(levelindex);
     draw();
-
-    //    sound::new_level_sound2();
 }
-
 
 pub fn draw() -> bool {
     custom_draw(0, 0, 0, false, false)
 }
 
-pub fn custom_draw(offset_x: usize, offset_y: usize, level_number: usize, small: bool, selected: bool) -> bool {
+pub fn custom_draw(
+    offset_x: usize,
+    offset_y: usize,
+    level_number: usize,
+    small: bool,
+    selected: bool,
+) -> bool {
     let term = Term::stdout();
 
     let mut buffer: Vec<(usize, usize, String)> = Vec::new();
@@ -244,22 +235,18 @@ pub fn custom_draw(offset_x: usize, offset_y: usize, level_number: usize, small:
         let smap: Level = get_floor_map(hero_y, hero_x, IS_FLOOR_MAP, *level);
         let bmap: Level = get_floor_map(hero_y, hero_x, IS_BOX_MAP, *level);
 
-       for y in 0.._count_y_buttom {
-           for x in 0.._count_x_rigth {
-//     for y in 0.._count_y_buttom {
-//            for x in 0..30 {
-
+        for y in 0.._count_y_buttom {
+            for x in 0.._count_x_rigth {
                 let cell = level[y][x];
 
                 let sx: usize;
                 let sy: usize;
-                if small 
-                {
+                if small {
                     sx = x * 2;
-                    sy = y ;    
+                    sy = y;
                 } else {
-                  sx = x * 5 + width;
-                  sy = y * 2 + height;
+                    sx = x * 5 + width;
+                    sy = y * 2 + height;
                 }
 
                 if cell == WALL_CODE
@@ -338,26 +325,23 @@ pub fn custom_draw(offset_x: usize, offset_y: usize, level_number: usize, small:
                             buffer.push((sx, sy, style.apply_to(FLOOR_DRAW_UP).to_string()));
                             buffer.push((sx, sy + 1, style.apply_to(FLOOR_DRAW_DN).to_string()));
                         }
-                    }
-		    else 
-                    if selected { 	
+                    } else if selected {
                         let style = get_style(F_FLOOR_COLOR, B_SELECTED_COLOR);
                         buffer.push((sx, sy, style.apply_to(FLOOR_DRAW_SMALL).to_string()));
                     }
                 }
             }
         }
-     
+
         let mut _offset_y = offset_y;
         if small {
-             _offset_y = _offset_y + (L_HEIGHT / 2 - _count_y_buttom / 2);
+            _offset_y = _offset_y + (L_HEIGHT / 2 - _count_y_buttom / 2);
         }
 
         let mut _offset_x = offset_x;
         if small {
-             _offset_x = _offset_x + (L_WIDTH / 2  - _count_x_rigth / 2);
+            _offset_x = _offset_x + (L_WIDTH / 2 - _count_x_rigth / 2);
         }
-
 
         for (x, y, text) in buffer {
             if x > screen_width {
@@ -368,25 +352,22 @@ pub fn custom_draw(offset_x: usize, offset_y: usize, level_number: usize, small:
                 continue;
             }
 
-
             term.move_cursor_to(x + _offset_x, y + _offset_y).unwrap();
-                        
+
             term.write_line(&text).unwrap();
         }
 
-
         if small && selected {
+            let s_height: usize = (S_HEIGHT).into();
+            term.move_cursor_to(0, s_height - 1).unwrap();
 
-             let s_height: usize = (S_HEIGHT).into();
-             term.move_cursor_to(0, s_height-1).unwrap();        
-
-             let style = get_style(B_FLOOR_COLOR, B_SELECTED_COLOR);
-             for x in 0..S_WIDTH {
-                print!("{}", style.apply_to(" "));                  
-             }
-             term.move_cursor_to(0, s_height-1).unwrap();        
-             print!("{}", style.apply_to(&format!("Level {}", level_number)));                  
-             print!("{}", style.apply_to(" :: use row keys for select/move level, Enter/Space to play, ESC to quit, '+/-/p' for music control :: "));                  
+            let style = get_style(B_FLOOR_COLOR, B_SELECTED_COLOR);
+            for _x in 0..S_WIDTH {
+                print!("{}", style.apply_to(" "));
+            }
+            term.move_cursor_to(0, s_height - 1).unwrap();
+            print!("{}", style.apply_to(&format!("Level {}", level_number)));
+            print!("{}", style.apply_to(" :: use row keys for select/move level, Enter/Space to play, ESC to quit, '+/-/p' for music control :: "));
         }
     }
     true
@@ -470,9 +451,20 @@ fn fill_level(hy: usize, hx: usize, is_flag: usize, mut map: Level) -> Level {
     map
 }
 
-pub fn draw_image(image: usize, hide: u8) {
+pub fn intro_image(image: usize) {
+    for i in (0..8).rev() {
+        draw_image_ex(image, i);
+        thread::sleep(Duration::from_millis(100));
+    }
+}
+
+pub fn draw_image(image: usize) {
+    draw_image_ex(image, 0);
+}
+
+pub fn draw_image_ex(image: usize, hide: u8) {
     let term = Term::stdout();
-     if term.is_term() {
+    if term.is_term() {
         //let (width, height) = term.size();
     } else {
         eprintln!("not term");
@@ -482,78 +474,57 @@ pub fn draw_image(image: usize, hide: u8) {
     let mut buffer: Vec<String> = Vec::new();
 
     let (_sh, _sw) = term.size();
-    
+
     let pixels;
 
-    if image == 0 { 
-      pixels = image0::get();
-    }
-    else 
-    if image == 1 { 
-      pixels = image0::get();
-    }
-    else 
-    if image == 2 { 
-      pixels = image2::get();
-    }
-    else 
-    if image == 3 { 
-      pixels = image3::get();
-    }
-    else 
-    {
-      pixels = image4::get();
+    if image == 0 {
+        pixels = image0::get();
+    } else if image == 1 {
+        pixels = image1::get();
+    } else if image == 2 {
+        pixels = image2::get();
+    } else if image == 3 {
+        pixels = image3::get();
+    } else {
+        pixels = image4::get();
     }
 
-
-
-    term.move_cursor_to(0, 0).unwrap();    
+    term.move_cursor_to(0, 0).unwrap();
 
     let psize = 56000;
     let lsize = 200 * 3;
 
-    let contents = fs::read_to_string("assets/image1.txt")
-        .expect("Should have been able to read the file");
-
-    let chars: Vec<char> = contents.chars().collect();
     let mut count: usize = 0;
-     
-   for i in (0..psize).step_by(lsize*2) {    
-     let mut s1: String = Default::default();          
 
-     for j in (i..i + lsize).step_by(3) {
+    for i in (0..psize).step_by(lsize * 2) {
+        let mut s1: String = Default::default();
 
+        for j in (i..i + lsize).step_by(3) {
+            let fc: RGB8 = RGB8 {
+                r: pixels[j + 0] >> hide,
+                g: pixels[j + 1] >> hide,
+                b: pixels[j + 2] >> hide,
+            };
 
-    	let fc: RGB8 = RGB8 {
-	    r: pixels[j+0] >> hide,
-	    g: pixels[j+1] >> hide,
-	    b: pixels[j+2] >> hide,
-	    };
+            let bc: RGB8 = RGB8 {
+                r: pixels[j + 0 + lsize] >> hide,
+                g: pixels[j + 1 + lsize] >> hide,
+                b: pixels[j + 2 + lsize] >> hide,
+            };
 
-    	let bc: RGB8 = RGB8 {
-	    r: pixels[j+0 + lsize] >> hide,
-	    g: pixels[j+1 + lsize] >> hide,
-	    b: pixels[j+2 + lsize] >> hide,
-	    };
+            let style: Style = Style::new()
+                .fg(Color::Color256(ansi256_from_rgb(fc)))
+                .bg(Color::Color256(ansi256_from_rgb(bc)));
 
-    
-    let style: Style = Style::new()
-        .fg(Color::Color256(ansi256_from_rgb(fc)))
-        .bg(Color::Color256(ansi256_from_rgb(bc)));
-
-      s1.push_str(&style.apply_to("\u{2580}").to_string());
-      count=count+1;
-     }
-     count=count+2;
-     buffer.push(s1);
-
-   }
-
-        term.move_cursor_to(0, 0).unwrap();
-        for text in buffer {
-            term.write_line(&text).unwrap();
-
+            s1.push_str(&style.apply_to("\u{2580}").to_string());
+            count = count + 1;
         }
-      
-}
+        count = count + 2;
+        buffer.push(s1);
+    }
 
+    term.move_cursor_to(0, 0).unwrap();
+    for text in buffer {
+        term.write_line(&text).unwrap();
+    }
+}

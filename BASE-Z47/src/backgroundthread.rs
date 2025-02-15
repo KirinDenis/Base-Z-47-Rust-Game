@@ -1,4 +1,4 @@
-
+/*
 use console::Term;
 use std::thread;
 use std::time::Duration;
@@ -24,3 +24,4 @@ pub fn run() {
     });
 
 }
+     */
