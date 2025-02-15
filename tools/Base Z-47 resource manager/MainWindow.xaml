@@ -40,10 +40,10 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Column="0" Grid.Row="0" Text="Destination width" TextWrapping="WrapWithOverflow" VerticalAlignment="Center"/>
-                <TextBox Grid.Column="1" Grid.Row="0" x:Name="WidthTextBox" Text="320" Height="25"/>
+                <TextBox Grid.Column="1" Grid.Row="0" x:Name="WidthTextBox" Text="211" Height="25"/>
 
                     <TextBlock Grid.Column="0" Grid.Row="1" Text="Destination height" TextWrapping="WrapWithOverflow" VerticalAlignment="Center"/>
-                <TextBox Grid.Column="1" Grid.Row="1" x:Name="HeightTextBox" Text="200" Height="25" />
+                <TextBox Grid.Column="1" Grid.Row="1" x:Name="HeightTextBox" Text="40" Height="25" />
                 <Button Grid.Column="1" Grid.Row="2" x:Name="ConvertButton" Content="Convert" Click="ConvertButton_Click" Height="25" />
 
 
