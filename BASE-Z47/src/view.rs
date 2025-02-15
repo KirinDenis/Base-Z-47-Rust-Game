@@ -160,7 +160,7 @@ pub fn read_char() -> KeyCode {
 pub fn set_level(levelindex: usize) {
     load_level(&format!("level{}", levelindex));
  //   view::clear();
-    draw_image(levelindex);
+    draw_image(levelindex, 2);
 
     draw();
 
@@ -470,7 +470,7 @@ fn fill_level(hy: usize, hx: usize, is_flag: usize, mut map: Level) -> Level {
     map
 }
 
-pub fn draw_image(image: usize) {
+pub fn draw_image(image: usize, hide: u8) {
     let term = Term::stdout();
      if term.is_term() {
         //let (width, height) = term.size();
@@ -505,7 +505,7 @@ pub fn draw_image(image: usize) {
       pixels = image4::get();
     }
 
-    //let rng = rand::thread_rng();
+
 
     term.move_cursor_to(0, 0).unwrap();    
 
@@ -524,18 +524,16 @@ pub fn draw_image(image: usize) {
      for j in (i..i + lsize).step_by(3) {
 
 
-//  let r = rng.gen_range(0..=3);
-//if r < 2 {
     	let fc: RGB8 = RGB8 {
-	    r: pixels[j+0] ,
-	    g: pixels[j+1]    ,
-	    b: pixels[j+2],
+	    r: pixels[j+0] >> hide,
+	    g: pixels[j+1] >> hide,
+	    b: pixels[j+2] >> hide,
 	    };
 
     	let bc: RGB8 = RGB8 {
-	    r: pixels[j+0 + lsize] ,
-	    g: pixels[j+1 + lsize]  ,
-	    b: pixels[j+2 + lsize] ,
+	    r: pixels[j+0 + lsize] >> hide,
+	    g: pixels[j+1 + lsize] >> hide,
+	    b: pixels[j+2 + lsize] >> hide,
 	    };
 
     
@@ -543,40 +541,7 @@ pub fn draw_image(image: usize) {
         .fg(Color::Color256(ansi256_from_rgb(fc)))
         .bg(Color::Color256(ansi256_from_rgb(bc)));
 
-        //print!("{}", chars[count]);
-       // print!("{}", style.apply_to(rng.gen_range('A'..='F')));
       s1.push_str(&style.apply_to("\u{2580}").to_string());
-//      s1.push_str(&style.apply_to({bc}).to_string());
-      //^^^Print colors
-      //s1.push_str(&style.apply_to(chars[count]).to_string());
-
-//    }
-/*
-    else {
-    	let fc: RGB8 = RGB8 {
-	    r: pixels[j+0] << 1,
-	    g: pixels[j+1] << 1 ,
-	    b: pixels[j+2] << 1,
-	    };
-
-    	let bc: RGB8 = RGB8 {
-	    r: pixels[j+0 + lsize],
-	    g: pixels[j+1 + lsize]  ,
-	    b: pixels[j+2 + lsize] ,
-	    };
-
-    
-    let style: Style = Style::new()
-        .fg(Color::Color256(ansi256_from_rgb(fc)))
-        .bg(Color::Color256(ansi256_from_rgb(bc)));
- //       print!("{}", style.apply_to("\u{2580}"));
-//        print!("{}", style.apply_to(rng.gen_range('0'..='9')));
-//         print!("{}", style.apply_to(' '));
-      //s1.push_str(&style.apply_to(' ').to_string());
-        s1.push_str(&style.apply_to(chars[count]).to_string());
-
-    }
-*/
       count=count+1;
      }
      count=count+2;
@@ -587,42 +552,8 @@ pub fn draw_image(image: usize) {
         term.move_cursor_to(0, 0).unwrap();
         for text in buffer {
             term.write_line(&text).unwrap();
+
         }
-
-    
- 	
-
-/*
-    for i in (0..25310).step_by(3) {
-    let pc: RGB8 = RGB8 {
-    r: pixels[i+0],
-    g: pixels[i+1],
-    b: pixels[i+2],
-    };
-    let style: Style = Style::new()
-        .fg(Color::Color256(ansi256_from_rgb(pc)))
-        .bg(Color::Color256(ansi256_from_rgb(pc)));
-
-
-    print!("{}", style.apply_to(" "));
-       
-
-
-    }
-*/
-
-/*
-    for i in 0..=255 {
-
-    let style: Style = Style::new()
-        .bg(Color::Color256(i));
-    
-     print!("{}", style.apply_to(" "));
-    }
-    println!("{}", _sw);
-    println!(" ");
-    println!("{}", _sh);
-*/
-   
+      
 }
 

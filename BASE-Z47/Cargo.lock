@@ -55,6 +55,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ace50bade8e6234aa140d9a2f552bbee1db4d353f69b8217bc503490fc1a9f26"
 
 [[package]]
+name = "basez47"
+version = "1.0.0"
+dependencies = [
+ "ansi_colours",
+ "console",
+ "crossterm",
+ "once_cell",
+ "rand",
+ "rgb",
+ "rlibc",
+ "rodio",
+]
+
+[[package]]
 name = "bindgen"
 version = "0.70.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -713,20 +727,6 @@ name = "rustc-hash"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "08d43f7aa6b08d49f382cde6a7982047c3426db949b1424bc4b7ec9ae12c6ce2"
-
-[[package]]
-name = "rustsoko"
-version = "0.1.0"
-dependencies = [
- "ansi_colours",
- "console",
- "crossterm",
- "once_cell",
- "rand",
- "rgb",
- "rlibc",
- "rodio",
-]
 
 [[package]]
 name = "same-file"

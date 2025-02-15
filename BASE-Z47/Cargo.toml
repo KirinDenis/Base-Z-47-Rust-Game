@@ -2,8 +2,8 @@
 rustflags = ["--cap-lints=allow"]
 
 [package]
-name = "rustsoko"
-version = "0.1.0"
+name = "basez47"
+version = "1.0.0"
 edition = "2021"
 
 [dependencies]
