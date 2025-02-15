@@ -32,8 +32,7 @@ fn select_level(levelindex: usize) {
         view::custom_draw(x_offset, y_offset, i, true, i == levelindex);
 
         x_offset = x_offset + 60;
-    }
-    //    sound::new_level_sound2();
+    } 
 }
 
 
@@ -45,8 +44,7 @@ fn main() {
     }
     view::intro_image(0); 
 
-
-    //backgroundthread::run();
+    
     let mut mode: usize = 0;
     let mut levelindex = 1;
     let mut step_result: usize = model::NO_STEP;
