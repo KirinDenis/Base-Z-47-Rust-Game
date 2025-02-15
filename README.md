@@ -1,3 +1,5 @@
+![BASE-Z47](https://github.com/KirinDenis/Base-Z-47-Rust-Game/blob/main/tools/rm_logo.jpg)
+
 # BASE-Z47 [Sokoban in Rust] (Console Version)
 
 This is a simple **console-based Sokoban game** written in Rust. It is my first Rust project, created as a learning exercise after completing the third chapter of "The Rust Programming Language" book.
