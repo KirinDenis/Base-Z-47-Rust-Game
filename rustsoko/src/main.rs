@@ -1,5 +1,4 @@
 mod backgroundthread;
-mod images;
 mod levels;
 mod model;
 mod sound;
@@ -27,18 +26,9 @@ const RIGHT_KEY: KeyCode = KeyCode::Right;
 const SELECT_KEY: KeyCode = KeyCode::Enter;
 const QUIT_KEY: KeyCode = KeyCode::Esc;
 
-fn set_level(levelindex: usize) {
-    levels::load_level(&format!("level{}", levelindex));
-    view::clear();
-    images::draw(levelindex);
-
-    view::draw();
-
-    //    sound::new_level_sound2();
-}
 
 fn select_level(levelindex: usize) {
-    images::draw(0);
+    view::draw_image(0);
     let mut x_offset = 10;
     let y_offset = 25;
     for i in levelindex..levelindex + 3 {
@@ -109,17 +99,17 @@ fn main() {
                 select_level(levelindex);
             }else if key == SELECT_KEY || key == KeyCode::Char(' ') {
                 mode = 1;
-                set_level(levelindex);
+                view::set_level(levelindex);
             }else if key == QUIT_KEY {            
             break;
             }
         } else {
             if key == KeyCode::Char('1') {
                 levelindex = levelindex - 1;
-                set_level(levelindex);
+                view::set_level(levelindex);
             } else if key == KeyCode::Char('2') {
                 levelindex = levelindex + 1;
-                set_level(levelindex);
+                view::set_level(levelindex);
             } else if key == UP_KEY {
                 step_result = do_step(-1, 0);
             } else if key == DOWN_KEY {
@@ -143,7 +133,7 @@ fn main() {
                 }
             } else if step_result == model::NEXT_LEVEL {
                 levelindex = levelindex + 1;
-                set_level(levelindex);
+                view::set_level(levelindex);
             }
 
             step_result = 0;
