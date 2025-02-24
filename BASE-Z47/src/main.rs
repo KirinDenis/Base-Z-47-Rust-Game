@@ -40,7 +40,7 @@ mod model;
 mod sound;
 mod view;
 
- //Background sound
+// Background sound dependencies
 use rodio::{Decoder, OutputStream, Sink, Source};
 use std::fs::File;
 use std::io::BufReader;
@@ -49,7 +49,7 @@ use std::sync::{Arc, Mutex};
 use crate::model::do_step;
 use crossterm::event::KeyCode;
 
-
+// Key bindings for movement and controls
 const UP_KEY: KeyCode = KeyCode::Up;
 const DOWN_KEY: KeyCode = KeyCode::Down;
 const LEFT_KEY: KeyCode = KeyCode::Left;
@@ -58,116 +58,116 @@ const RIGHT_KEY: KeyCode = KeyCode::Right;
 const SELECT_KEY: KeyCode = KeyCode::Enter;
 const QUIT_KEY: KeyCode = KeyCode::Esc;
 
-
+// Function to display level selection screen
 fn select_level(levelindex: usize) {
-    view::draw_image(0);
+    view::draw_image(0); // Draw background image
     let mut x_offset = 10;
     let y_offset = 25;
+    
     for i in levelindex..levelindex + 3 {
-        levels::load_level(&format!("level{}", i));
-        view::custom_draw(x_offset, y_offset, i, true, i == levelindex);
-
-        x_offset = x_offset + 60;
+        levels::load_level(&format!("level{}", i)); // Load the level data
+        view::custom_draw(x_offset, y_offset, i, true, i == levelindex); // Draw the level preview
+        x_offset += 60;
     } 
 }
 
-
-
 fn main() {
-
+    // Initialize the game controller, exit if initialization fails
     if !view::init() {
         return;
     }
-    view::intro_image(0); 
+    view::intro_image(0); // Display intro image
 
-    
-    let mut mode: usize = 0;
+    let mut mode: usize = 0; // 0 = Level selection, 1 = Game mode
     let mut levelindex = 1;
     let mut step_result: usize = model::NO_STEP;
     select_level(levelindex);
 
-   //Background sound play
-        let (_stream, handle) = OutputStream::try_default().unwrap();
-        let sink = Arc::new(Mutex::new(Sink::try_new(&handle).unwrap()));
+    // Background music setup
+    let (_stream, handle) = OutputStream::try_default().unwrap();
+    let sink = Arc::new(Mutex::new(Sink::try_new(&handle).unwrap()));
 
-
-        let files = vec!["assets/music.mp3", "assets/music.mp3"];
-        for file in &files {
-            let file = BufReader::new(File::open(file).unwrap());
-            let source = Decoder::new(file).unwrap().repeat_infinite();
-            sink.lock().unwrap().append(source);
-        }
-
-        let sink = sink.lock().unwrap();
-        sink.set_volume(0.1);
-
+    let files = vec!["assets/music.mp3", "assets/music.mp3"];
+    for file in &files {
+        let file = BufReader::new(File::open(file).unwrap());
+        let source = Decoder::new(file).unwrap().repeat_infinite();
+        sink.lock().unwrap().append(source);
+    }
     
-
+    let sink = sink.lock().unwrap();
+    sink.set_volume(0.1); // Set initial volume
+    
+    // Main game loop
     loop {
         let key = view::read_char();
 
+        // Ignore specific key input
         if key == KeyCode::Char('_') {
             continue;
         }
 
+        // Handle background music controls
         if key == KeyCode::Char('p') {
             if sink.is_paused() {
-                            sink.play();
-                        } else {
-                            sink.pause();
-                        }
-            } else if key == KeyCode::Char('+') {
-                let vol = sink.volume() + 0.1;
-                sink.set_volume(vol.max(1.0));
-            } else if key == KeyCode::Char('-') {
-                let vol = sink.volume() - 0.1;
-                sink.set_volume(vol.max(0.0));
-            } 
- 
+                sink.play(); // Resume music
+            } else {
+                sink.pause(); // Pause music
+            }
+        } else if key == KeyCode::Char('+') {
+            let vol = sink.volume() + 0.1;
+            sink.set_volume(vol.max(1.0)); // Increase volume
+        } else if key == KeyCode::Char('-') {
+            let vol = sink.volume() - 0.1;
+            sink.set_volume(vol.max(0.0)); // Decrease volume
+        }
 
+        // Handle level selection mode
         if mode == 0 {
             if key == LEFT_KEY {
-                levelindex = levelindex - 1;
+                levelindex -= 1;
                 select_level(levelindex);
             } else if key == RIGHT_KEY {
-                levelindex = levelindex + 1;
+                levelindex += 1;
                 select_level(levelindex);
-            }else if key == SELECT_KEY || key == KeyCode::Char(' ') {
+            } else if key == SELECT_KEY || key == KeyCode::Char(' ') {
                 mode = 1;
-                view::set_level(levelindex);
-            }else if key == QUIT_KEY {            
-            break;
+                view::set_level(levelindex); // Start game with selected level
+            } else if key == QUIT_KEY {            
+                break; // Exit game
             }
-        } else {
+        } else { // Handle gameplay mode
             if key == KeyCode::Char('1') {
-                levelindex = levelindex - 1;
+                levelindex -= 1;
                 view::set_level(levelindex);
             } else if key == KeyCode::Char('2') {
-                levelindex = levelindex + 1;
+                levelindex += 1;
                 view::set_level(levelindex);
             } else if key == UP_KEY {
-                step_result = do_step(-1, 0);
+                step_result = do_step(-1, 0); // Move up
             } else if key == DOWN_KEY {
-                step_result = do_step(1, 0);
+                step_result = do_step(1, 0); // Move down
             } else if key == LEFT_KEY {
-                step_result = do_step(0, -1);
+                step_result = do_step(0, -1); // Move left
             } else if key == RIGHT_KEY {
-                step_result = do_step(0, 1);
-            }if key == QUIT_KEY {            
+                step_result = do_step(0, 1); // Move right
+            } 
+            
+            if key == QUIT_KEY {            
                 mode = 0;
-               select_level(levelindex);
+                select_level(levelindex); // Return to level selection
             }
 
-
+            // Process movement results
             if step_result == model::NO_STEP {
+                // No movement
             } else if step_result == model::CAN_STEP {
-                sound::step_sound();
+                sound::step_sound(); // Play step sound
                 if !view::draw() {
-                    break;
+                    break; // Exit if rendering fails
                 }
             } else if step_result == model::NEXT_LEVEL {
-                levelindex = levelindex + 1;
-                view::set_level(levelindex);
+                levelindex += 1;
+                view::set_level(levelindex); // Load next level
             }
 
             step_result = 0;
