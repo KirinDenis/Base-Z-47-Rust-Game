@@ -3,6 +3,10 @@ mod utils;
 use wasm_bindgen::prelude::*;
 use web_sys::{window, Document, HtmlElement, KeyboardEvent};
 
+use std::thread;
+use std::time::Duration;
+
+
 #[wasm_bindgen(start)]
 pub fn start() {
     let document = window().unwrap().document().unwrap();
@@ -13,9 +17,13 @@ pub fn start() {
     console.set_attribute("tabindex", "0").unwrap(); 
     document.body().unwrap().append_child(&console).unwrap();
 
+    let pre = document.create_element("pre").unwrap();
+    let code = document.create_element("code").unwrap();
+    pre.append_child(&code); 
 
     let line = document.create_element("div").unwrap();
     line.set_attribute("class", "line").unwrap();
+    code.append_child(&line); 
 
     let content = document.create_element("span").unwrap();
     content.set_attribute("class", "content").unwrap();
@@ -32,7 +40,29 @@ pub fn start() {
     cursor.set_text_content(Some("_"));
     line.append_child(&cursor).unwrap();
 
-    console.append_child(&line).unwrap();
+    console.append_child(&pre).unwrap();
+
+    let colors = ["red", "blue", "green", "purple", "brown", "black"];
+    let mut text = code.text_content().unwrap_or_default();
+
+    for l in 20..30
+    {
+    text.push_str("");
+    for y in 0..50
+    {  
+      for x in 0..200 
+      {              
+	 let fg = colors[(y + l) % colors.len()];
+         let bg = colors[(x + 2) % colors.len()];
+
+         text.push_str(&format!("<span style='color: {}; background-color: {};'>{}</span>", fg, bg, " \u{250C}\u{2500}\u{2510} "));
+         text.push_str(&format!("<span style='color: {}; background-color: {};'>{}</span>", fg, bg, " \u{2514}\u{2500}\u{2518} "));
+      }
+      text.push_str("<br>");
+    }
+    code.set_inner_html(&text);
+    thread::sleep(Duration::from_millis(10000));
+    }
 
 
     let closure = Closure::wrap(Box::new(move |event: KeyboardEvent| {
@@ -70,6 +100,7 @@ pub fn start() {
             let mut text = content.text_content().unwrap_or_default();
             text.push_str(&key);
             content.set_text_content(Some(&text));
+           
         }
 
 
