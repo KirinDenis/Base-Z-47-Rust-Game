@@ -1,3 +1,3 @@
+cargo build 2> !buildresult.log
 cd ..
-cargo build
 wasm-pack build

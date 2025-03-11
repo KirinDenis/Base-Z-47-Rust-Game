@@ -1,10 +1,15 @@
 mod utils;
 
+mod view;
+
+
 use wasm_bindgen::prelude::*;
 use web_sys::{window, Document, HtmlElement, KeyboardEvent};
 
 use std::thread;
 use std::time::Duration;
+
+
 
 
 #[wasm_bindgen(start)]
@@ -19,6 +24,7 @@ pub fn start() {
 
     let pre = document.create_element("pre").unwrap();
     let code = document.create_element("code").unwrap();
+    code.set_attribute("id", "code").unwrap();
     pre.append_child(&code); 
 
     let line = document.create_element("div").unwrap();
@@ -45,6 +51,9 @@ pub fn start() {
     let colors = ["red", "blue", "green", "purple", "brown", "black"];
     let mut text = code.text_content().unwrap_or_default();
 
+    view::draw_image_ex(0,0);
+
+    /*
     for l in 20..30
     {
     text.push_str("");
@@ -63,8 +72,8 @@ pub fn start() {
     code.set_inner_html(&text);
     thread::sleep(Duration::from_millis(10000));
     }
-
-
+    */
+    let mut imagecount = 0; 
     let closure = Closure::wrap(Box::new(move |event: KeyboardEvent| {
         let key = event.key();
 
@@ -90,6 +99,9 @@ pub fn start() {
             new_line.append_child(&new_cursor).unwrap();
 
             console.append_child(&new_line).unwrap();
+
+            imagecount = imagecount + 1;
+            view::draw_image_ex(imagecount,0); 
         } else if key == "Backspace" {
 
             let mut text = content.text_content().unwrap_or_default();
