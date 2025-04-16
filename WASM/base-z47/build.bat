@@ -1,4 +1,3 @@
-cd ..
 cargo build
 wasm-pack build
 REM npm init wasm-app www 

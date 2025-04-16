@@ -1,8 +1,8 @@
 pub mod image0;
-pub mod image1;
-pub mod image2;
-pub mod image3;
-pub mod image4;
+//pub mod image1;
+//pub mod image2;
+//pub mod image3;
+//pub mod image4;
 
 //use rgb::RGB8;
 use hex::encode;
@@ -38,14 +38,15 @@ pub fn draw_image_ex(image: usize, hide: u8) {
 
     if image == 0 {
         pixels = image0::get();
-    } else if image == 1 {
-        pixels = image1::get();
+    } 
+      else if image == 1 {
+  pixels = image0::get();
     } else if image == 2 {
-        pixels = image2::get();
+  pixels = image0::get();
     } else if image == 3 {
-        pixels = image3::get();
+  pixels = image0::get();
     } else {
-        pixels = image4::get();
+  pixels = image0::get();
     }
 
   //  term.move_cursor_to(0, 0).unwrap();

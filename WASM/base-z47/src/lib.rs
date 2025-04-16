@@ -3,20 +3,87 @@ mod utils;
 mod view;
 
 
+use std::rc::Rc;
+use std::cell::RefCell;
+
 use wasm_bindgen::prelude::*;
-use web_sys::{window, Document, HtmlElement, KeyboardEvent};
+use wasm_bindgen::JsCast;
+use web_sys::{window, Document, HtmlElement, KeyboardEvent, HtmlCanvasElement, CanvasRenderingContext2d};
 
 use std::thread;
 use std::time::Duration;
 
+fn draw_squares(ctx: &CanvasRenderingContext2d, width: u32, height: u32) {
+    use js_sys::Math::random;
+    
+    let square_size = 20;
+    let cols = width / square_size;
+    let rows = height / square_size;
+    
+    for x in 0..cols {
+        for y in 0..rows {
+            let r = (random() * 255.0) as u8;
+            let g = (random() * 255.0) as u8;
+            let b = (random() * 255.0) as u8;
+            let color = format!("rgb({}, {}, {})", r, g, b);
+            ctx.set_fill_style(&color.into());
+            ctx.fill_rect(
+                (x * square_size) as f64,
+                (y * square_size) as f64,
+                square_size as f64,
+                square_size as f64,
+            );
+        }
+    }
+}
 
+fn init()-> Result<(), JsValue> {
+    let document = window().unwrap().document().unwrap();
+    let canvas = document.create_element("canvas")?.dyn_into::<HtmlCanvasElement>()?;
+    let body = document.body().unwrap();
+    body.append_child(&canvas)?;
+
+    let context = canvas
+        .get_context("2d")?
+        .unwrap()
+        .dyn_into::<CanvasRenderingContext2d>()?;
+
+    let context = Rc::new(RefCell::new(context));
+    let canvas = Rc::new(canvas);
+
+    // Resize canvas to full window size
+    let context_clone = Rc::clone(&context);
+    let canvas_clone = Rc::clone(&canvas);
+    let closure = Closure::wrap(Box::new(move || {
+        let width = window().unwrap().inner_width().unwrap().as_f64().unwrap() as u32;
+        let height = window().unwrap().inner_height().unwrap().as_f64().unwrap() as u32;
+        canvas_clone.set_width(width);
+        canvas_clone.set_height(height);
+        draw_squares(&context_clone.borrow(), width, height);
+    }) as Box<dyn FnMut()>);
+
+    window().unwrap().set_onresize(Some(closure.as_ref().unchecked_ref()));
+    closure.forget(); 
+
+    // Initial drawing
+    let width = canvas.width();
+    
+    let height = canvas.height();
+
+    
+    let ctx = context.borrow();
+     draw_squares(&context.borrow(), width, height);    
+     Ok(())
+}
 
 
 #[wasm_bindgen(start)]
-pub fn start() {
-    let document = window().unwrap().document().unwrap();
+pub fn start() -> Result<(), JsValue> {
 
+    init();
 
+    Ok(())
+/*
     let console = document.create_element("div").unwrap();
     console.set_attribute("id", "console").unwrap();
     console.set_attribute("tabindex", "0").unwrap(); 
@@ -53,26 +120,6 @@ pub fn start() {
 
     view::draw_image_ex(0,0);
 
-    /*
-    for l in 20..30
-    {
-    text.push_str("");
-    for y in 0..50
-    {  
-      for x in 0..200 
-      {              
-	 let fg = colors[(y + l) % colors.len()];
-         let bg = colors[(x + 2) % colors.len()];
-
-         text.push_str(&format!("<span style='color: {}; background-color: {};'>{}</span>", fg, bg, " \u{250C}\u{2500}\u{2510} "));
-         text.push_str(&format!("<span style='color: {}; background-color: {};'>{}</span>", fg, bg, " \u{2514}\u{2500}\u{2518} "));
-      }
-      text.push_str("<br>");
-    }
-    code.set_inner_html(&text);
-    thread::sleep(Duration::from_millis(10000));
-    }
-    */
     let mut imagecount = 0; 
     let closure = Closure::wrap(Box::new(move |event: KeyboardEvent| {
         let key = event.key();
@@ -121,6 +168,7 @@ pub fn start() {
 
     console.add_event_listener_with_callback("keydown", closure.as_ref().unchecked_ref()).unwrap();
     closure.forget();
+*/
 }
 fn log_to_console(message: &str) {
     let document = window().unwrap().document().unwrap();
