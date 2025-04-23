@@ -319,6 +319,16 @@ pub fn custom_draw(
                     } else if selected {
                         //let style = get_style(F_FLOOR_COLOR, B_SELECTED_COLOR);
                         //buffer.push((sx, sy, style.apply_to(FLOOR_DRAW_SMALL).to_string()));
+
+                    let color =F_SFLOOR_COLOR;
+                    ctx.set_fill_style(&color.into());
+                    ctx.fill_rect(
+                        (x * square_size) as f64,
+                        (y  * square_size) as f64,
+                        square_size as f64,
+                        square_size as f64,
+                    );
+
                     }
                 }             
             }

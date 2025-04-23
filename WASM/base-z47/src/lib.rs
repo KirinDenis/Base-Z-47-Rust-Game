@@ -104,15 +104,24 @@ pub fn start() -> Result<(), JsValue> {
             view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
         } else if key == "arrowup" {
             do_step(-1, 0);
-           // levelindex += 1;
-           // load_level(&format!("level{}", levelindex));
-          //  view::draw_image_ex(&context_clone.borrow(), width, height, imagecount, 0);
             view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
 
-            // let mut text = content.text_content().unwrap_or_default();
-            //text.pop();
-            //content.set_text_content(Some(&text));
-        } else if key.len() == 1 {
+        }else if key == "arrowdown" {
+            do_step(1, 0);
+            view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
+
+        }   else if key == "arrowleft" {
+            do_step(0, -1);
+            view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
+
+        }   else if key == "arrowright" {
+            do_step(0, 1);
+            view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
+
+        }  
+  
+
+        else if key.len() == 1 {
 
 
             //let mut text = content.text_content().unwrap_or_default();
