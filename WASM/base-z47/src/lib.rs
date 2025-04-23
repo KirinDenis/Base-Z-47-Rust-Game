@@ -5,6 +5,7 @@ mod view;
 mod levels;
 mod model;
 
+use crate::model::do_step;
 use crate::levels::load_level;
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -93,17 +94,26 @@ pub fn start() -> Result<(), JsValue> {
 
 
     let closure = Closure::wrap(Box::new(move |event: KeyboardEvent| {
-        let key = event.key();
+        let key = event.key().to_lowercase();
 
-        if key == "Enter" {
+         web_sys::console::log_1(&key.as_str().into());
+
+        if key == "enter" {
             imagecount = imagecount + 1;
             view::draw_image_ex(&context_clone.borrow(), width, height, imagecount, 0);
-        } else if key == "Backspace" {
+            view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
+        } else if key == "arrowup" {
+            do_step(-1, 0);
+           // levelindex += 1;
+           // load_level(&format!("level{}", levelindex));
+          //  view::draw_image_ex(&context_clone.borrow(), width, height, imagecount, 0);
+            view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
 
             // let mut text = content.text_content().unwrap_or_default();
             //text.pop();
             //content.set_text_content(Some(&text));
         } else if key.len() == 1 {
+
 
             //let mut text = content.text_content().unwrap_or_default();
             //text.push_str(&key);

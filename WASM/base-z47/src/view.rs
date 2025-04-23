@@ -31,12 +31,14 @@ const IS_BOX_MAP: usize = 2;
 #[rustfmt::skip]
 
 //pub const F_BASE_COLOR: &str = "rgb(0xC2, 0x14,  0x60)";
-
+pub const F_FLOOR_COLOR: &str = "rgb(216, 253,  184)"; 
+pub const F_SFLOOR_COLOR: &str = "rgb(190, 255,  125)"; 
+pub const F_HERO_COLOR: &str = "rgb(216, 253,  184)"; 
+pub const F_BLOCK_COLOR: &str = "rgb(56, 110,  170)"; 
+pub const F_SBLOCK_COLOR: &str = "rgb(56, 170,  170)"; 
 pub const F_BASE_COLOR: &str = "rgb(200, 20,  100)";
-
 pub const F_WALL_COLOR: &str = "rgb(85, 85, 255)";
-
-
+pub const B_SELECTED_COLOR: &str = "rgb(255, 85, 85)";
 
 use wasm_bindgen::prelude::*;
 use web_sys::{
@@ -82,8 +84,8 @@ pub fn custom_draw(
     let _sh = 60;
     let _sw = 200;
     
-  //  let square_size = _width / _sw;
-  let square_size = 40;
+   let square_size = (_width * 5) / _sw;
+  //let square_size = 40;
 
     let mut _count_x_rigth = 0;
     let mut _count_y_buttom = 20;
@@ -203,12 +205,12 @@ pub fn custom_draw(
                         buffer.push((sx, sy + 1, style.apply_to(BASE_DRAW_DN).to_string()));
                     }
                     */
-                }
-                /*--------------
+                }                
                  else if cell == BOX_CODE
                 //Box
                 {
                     if bmap[y][x] == LEVEL_CODE {
+			/*
                         let style = get_style(F_SBLOCK_COLOR, B_SBLOCK_COLOR);
 
                         if small {
@@ -217,7 +219,19 @@ pub fn custom_draw(
                             buffer.push((sx, sy, style.apply_to(BOX_DRAW_UP).to_string()));
                             buffer.push((sx, sy + 1, style.apply_to(BOX_DRAW_DN).to_string()));
                         }
+			*/
+                    let color = F_SBLOCK_COLOR;
+                    ctx.set_fill_style(&color.into());
+                    ctx.fill_rect(
+                        (x * square_size) as f64,
+                        (y  * square_size) as f64,
+                        square_size as f64,
+                        square_size as f64,
+                    );
+
+
                     } else {
+			/*
                         let style = get_style(F_BLOCK_COLOR, B_BLOCK_COLOR);
 
                         if small {
@@ -226,10 +240,21 @@ pub fn custom_draw(
                             buffer.push((sx, sy, style.apply_to(BOX_DRAW_UP).to_string()));
                             buffer.push((sx, sy + 1, style.apply_to(BOX_DRAW_DN).to_string()));
                         }
+			*/
+                    let color = F_BLOCK_COLOR;
+                    ctx.set_fill_style(&color.into());
+                    ctx.fill_rect(
+                        (x * square_size) as f64,
+                        (y  * square_size) as f64,
+                        square_size as f64,
+                        square_size as f64,
+                    );
+
                     }
                 } else if cell == HERO_CODE
                 //Hero
                 {
+		/*
                     let style = get_style(F_HERO_COLOR, B_HERO_COLOR);
 
                     if small {
@@ -238,10 +263,21 @@ pub fn custom_draw(
                         buffer.push((sx, sy, style.apply_to(HERO_DRAW_UP).to_string()));
                         buffer.push((sx, sy + 1, style.apply_to(HERO_DRAW_DN).to_string()));
                     }
+		*/
+                    let color = F_HERO_COLOR;
+                    ctx.set_fill_style(&color.into());
+                    ctx.fill_rect(
+                        (x * square_size) as f64,
+                        (y  * square_size) as f64,
+                        square_size as f64,
+                        square_size as f64,
+                    );
+
                 } else
                 //Default space
                 {
                     if smap[y][x] == LEVEL_CODE {
+			/*
                         let style = get_style(F_SFLOOR_COLOR, B_SFLOOR_COLOR);
 
                         if small {
@@ -250,7 +286,18 @@ pub fn custom_draw(
                             buffer.push((sx, sy, style.apply_to(FLOOR_DRAW_UP).to_string()));
                             buffer.push((sx, sy + 1, style.apply_to(FLOOR_DRAW_DN).to_string()));
                         }
+			*/
+                    let color =F_SFLOOR_COLOR;
+                    ctx.set_fill_style(&color.into());
+                    ctx.fill_rect(
+                        (x * square_size) as f64,
+                        (y  * square_size) as f64,
+                        square_size as f64,
+                        square_size as f64,
+                    );
+
                     } else if map[y][x] == LEVEL_CODE {
+			/*
                         let style = get_style(F_FLOOR_COLOR, B_FLOOR_COLOR);
 
                         if small {
@@ -259,12 +306,21 @@ pub fn custom_draw(
                             buffer.push((sx, sy, style.apply_to(FLOOR_DRAW_UP).to_string()));
                             buffer.push((sx, sy + 1, style.apply_to(FLOOR_DRAW_DN).to_string()));
                         }
+			*/
+                    let color =F_SFLOOR_COLOR;
+                    ctx.set_fill_style(&color.into());
+                    ctx.fill_rect(
+                        (x * square_size) as f64,
+                        (y  * square_size) as f64,
+                        square_size as f64,
+                        square_size as f64,
+                    );
+
                     } else if selected {
-                        let style = get_style(F_FLOOR_COLOR, B_SELECTED_COLOR);
-                        buffer.push((sx, sy, style.apply_to(FLOOR_DRAW_SMALL).to_string()));
+                        //let style = get_style(F_FLOOR_COLOR, B_SELECTED_COLOR);
+                        //buffer.push((sx, sy, style.apply_to(FLOOR_DRAW_SMALL).to_string()));
                     }
-                }
-             */
+                }             
             }
                 
         }
