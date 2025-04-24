@@ -94,31 +94,51 @@ pub fn start() -> Result<(), JsValue> {
 
 
     let closure = Closure::wrap(Box::new(move |event: KeyboardEvent| {
+
         let key = event.key().to_lowercase();
 
          web_sys::console::log_1(&key.as_str().into());
 
         if key == "enter" {
+            event.prevent_default();
             imagecount = imagecount + 1;
             view::draw_image_ex(&context_clone.borrow(), width, height, imagecount, 0);
             view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
         } else if key == "arrowup" {
+                 event.prevent_default();
             do_step(-1, 0);
             view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
 
         }else if key == "arrowdown" {
+        event.prevent_default();
             do_step(1, 0);
             view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
-
         }   else if key == "arrowleft" {
+        event.prevent_default();
             do_step(0, -1);
             view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
 
         }   else if key == "arrowright" {
+        event.prevent_default();
             do_step(0, 1);
             view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
-
         }  
+         else if key == "1" {
+         event.prevent_default();
+         levelindex -= 1;
+         load_level(&format!("level{}", levelindex));
+         view::draw_image_ex(&context_clone.borrow(), width, height, imagecount, 0);
+         view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
+        }  
+         else if key == "2" {
+         event.prevent_default();
+         levelindex += 1;
+         load_level(&format!("level{}", levelindex));
+         view::draw_image_ex(&context_clone.borrow(), width, height, imagecount, 0);
+         view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
+        }  
+
+
   
 
         else if key.len() == 1 {

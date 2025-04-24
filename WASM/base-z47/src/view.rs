@@ -33,10 +33,10 @@ const IS_BOX_MAP: usize = 2;
 //pub const F_BASE_COLOR: &str = "rgb(0xC2, 0x14,  0x60)";
 pub const F_FLOOR_COLOR: &str = "rgb(216, 253,  184)"; 
 pub const F_SFLOOR_COLOR: &str = "rgb(190, 255,  125)"; 
-pub const F_HERO_COLOR: &str = "rgb(216, 253,  184)"; 
-pub const F_BLOCK_COLOR: &str = "rgb(56, 110,  170)"; 
-pub const F_SBLOCK_COLOR: &str = "rgb(56, 170,  170)"; 
-pub const F_BASE_COLOR: &str = "rgb(200, 20,  100)";
+pub const F_HERO_COLOR: &str = "rgb(255, 60, 140)"; 
+pub const F_BLOCK_COLOR: &str = "rgb(80, 100, 200)"; 
+pub const F_SBLOCK_COLOR: &str = "rgb(100, 100, 200)"; 
+pub const F_BASE_COLOR: &str = "rgb(255, 220,  120)";
 pub const F_WALL_COLOR: &str = "rgb(85, 85, 255)";
 pub const B_SELECTED_COLOR: &str = "rgb(255, 85, 85)";
 
@@ -276,7 +276,7 @@ pub fn custom_draw(
                 } else
                 //Default space
                 {
-                    if smap[y][x] == LEVEL_CODE {
+                   if smap[y][x] == LEVEL_CODE  {
 			/*
                         let style = get_style(F_SFLOOR_COLOR, B_SFLOOR_COLOR);
 
@@ -307,7 +307,7 @@ pub fn custom_draw(
                             buffer.push((sx, sy + 1, style.apply_to(FLOOR_DRAW_DN).to_string()));
                         }
 			*/
-                    let color =F_SFLOOR_COLOR;
+                    let color =F_FLOOR_COLOR;
                     ctx.set_fill_style(&color.into());
                     ctx.fill_rect(
                         (x * square_size) as f64,
@@ -386,14 +386,14 @@ fn get_floor_map(hy: usize, hx: usize, is_flag: usize, map: Level) -> Level {
         .spawn(move || fill_level(hy, hx, is_flag, map))
         .unwrap();
  */
-    fill_level(hy, hx, is_flag, map);
+    fill_level(hy, hx, is_flag, map)
     /*
     match handle.join() {
         Ok(result) => return result,
         Err(e) => eprintln!("Error: {:?}", e),
     }
      */
-    map
+   // map
 }
 
 fn is_floor(c: char, is_flag: usize) -> bool {
