@@ -12,6 +12,7 @@ use crate::levels::level_const::L_WIDTH;
 pub const NO_STEP: usize = 0;
 pub const CAN_STEP: usize = 1;
 pub const NEXT_LEVEL: usize = 2;
+pub const WAIT_STEP: usize = 3;
 
 struct Position {
     row: usize,

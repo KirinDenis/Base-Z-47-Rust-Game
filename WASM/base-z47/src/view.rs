@@ -72,8 +72,8 @@ pub fn draw_squares(ctx: &CanvasRenderingContext2d, width: u32, height: u32) {
 
 pub fn custom_draw(
     ctx: &CanvasRenderingContext2d,
-    _width: usize,
-    _height: usize,    
+    mut _width: usize,
+    mut _height: usize,    
     offset_x: usize,
     offset_y: usize,
     level_number: usize,
@@ -84,7 +84,9 @@ pub fn custom_draw(
     let _sh = 60;
     let _sw = 200;
     
-   let square_size = (_width * 5) / _sw;
+   _width *= 5;
+
+   let square_size = (_width) / _sw;
   //let square_size = 40;
 
     let mut _count_x_rigth = 0;
@@ -114,17 +116,20 @@ pub fn custom_draw(
         }
 
         let mut width = _count_x_rigth;
+
         //Drawing game object 5 char width 2 char height
         width = ((_width / 5) / 2) - (width / 2);
-        width = width * 5;
+        //width = width * 5;
+
 
         if _count_y_buttom > L_HEIGHT {
             _count_y_buttom = L_HEIGHT;
         }
 
         let mut height = _count_y_buttom;
-        height = ((_height / 2) / 2) - (height / 2);
-        height = height * 2;
+        height = (_height  / 2) - (height * square_size/ 2);
+        // height = height * 2;
+        web_sys::console::log_1(&height.to_string().into());
 
         let mut hero_x = 0;
         let mut hero_y = 0;
@@ -156,9 +161,10 @@ pub fn custom_draw(
                     sx = x * 2;
                     sy = y;
                 } else {
-                    sx = x * 5 + width;
-                    sy = y * 2 + height;
+                    sx = x * square_size + width;
+                    sy = y * square_size + height;
                 }
+                //web_sys::console::log_1(&sy.to_string().into());
 
                 if cell == WALL_CODE
                 //Wall
@@ -167,8 +173,8 @@ pub fn custom_draw(
                     let color = F_WALL_COLOR;
                     ctx.set_fill_style(&color.into());
                     ctx.fill_rect(
-                        (x * square_size) as f64,
-                        (y  * square_size) as f64,
+                        (sx) as f64,
+                        (sy) as f64,
                         square_size as f64,
                         square_size as f64,
                     );

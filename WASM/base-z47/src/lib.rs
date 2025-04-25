@@ -91,13 +91,13 @@ pub fn start() -> Result<(), JsValue> {
 
     let context_clone = Rc::clone(&context);
     let canvas_clone = Rc::clone(&canvas);
-
+    let mut step_result: usize = model::WAIT_STEP;
 
     let closure = Closure::wrap(Box::new(move |event: KeyboardEvent| {
 
         let key = event.key().to_lowercase();
 
-         web_sys::console::log_1(&key.as_str().into());
+     //    web_sys::console::log_1(&key.as_str().into());
 
         if key == "enter" {
             event.prevent_default();
@@ -105,23 +105,23 @@ pub fn start() -> Result<(), JsValue> {
             view::draw_image_ex(&context_clone.borrow(), width, height, imagecount, 0);
             view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
         } else if key == "arrowup" {
-                 event.prevent_default();
-            do_step(-1, 0);
-            view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
+
+            step_result = do_step(-1, 0);
+
 
         }else if key == "arrowdown" {
-        event.prevent_default();
-            do_step(1, 0);
-            view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
+
+            step_result = do_step(1, 0);
+
         }   else if key == "arrowleft" {
-        event.prevent_default();
-            do_step(0, -1);
-            view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
+
+            step_result = do_step(0, -1);
+
 
         }   else if key == "arrowright" {
-        event.prevent_default();
-            do_step(0, 1);
-            view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
+
+            step_result = do_step(0, 1);
+
         }  
          else if key == "1" {
          event.prevent_default();
@@ -138,16 +138,21 @@ pub fn start() -> Result<(), JsValue> {
          view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
         }  
 
-
-  
-
-        else if key.len() == 1 {
-
-
-            //let mut text = content.text_content().unwrap_or_default();
-            //text.push_str(&key);
-            //content.set_text_content(Some(&text));
-        }
+            // Process movement results
+            if step_result == model::NO_STEP {
+               event.prevent_default();
+            } else if step_result == model::CAN_STEP {
+                //sound::step_sound(); // Play step sound
+               event.prevent_default();
+                view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
+            } else if step_result == model::NEXT_LEVEL {
+                levelindex += 1;
+                //view::set_level(levelindex); // Load next level
+         	load_level(&format!("level{}", levelindex));
+           	 view::draw_image_ex(&context_clone.borrow(), width, height, imagecount, 0);
+                view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
+            }
+           step_result = model::WAIT_STEP;
     }) as Box<dyn FnMut(_)>);
 
     window()

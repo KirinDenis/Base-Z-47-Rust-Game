@@ -1,5 +1,5 @@
-REM cargo build
-REM  wasm-pack build
+cargo build
+wasm-pack build
 REM npm init wasm-app www 
 rem only once 
 cd www
