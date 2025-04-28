@@ -4,18 +4,11 @@ pub mod image2;
 pub mod image3;
 pub mod image4;
 
-use hex::encode;
-
 use crate::levels::level_const::WALL_CODE;
-use crate::levels::load_level;
 use crate::levels::Level;
 use crate::levels::CLEVEL;
-
 use crate::levels::level_const::L_HEIGHT;
 use crate::levels::level_const::L_WIDTH;
-use crate::levels::level_const::S_HEIGHT;
-use crate::levels::level_const::S_WIDTH;
-
 use crate::levels::level_const::BASE_CODE;
 use crate::levels::level_const::BOX_CODE;
 use crate::levels::level_const::FLOOR_CODE;
@@ -37,11 +30,11 @@ pub const F_BLOCK_COLOR: &str = "rgb(10, 250, 20)";
 pub const F_SBLOCK_COLOR: &str = "rgb(50, 200, 50)"; 
 pub const F_BASE_COLOR: &str = "rgb(255, 220,  120)";
 pub const F_WALL_COLOR: &str = "rgb(85, 85, 255)";
-pub const B_SELECTED_COLOR: &str = "rgb(255, 85, 85)";
+
 
 use wasm_bindgen::prelude::*;
 use web_sys::{
-    window, CanvasRenderingContext2d, Document, HtmlCanvasElement, HtmlElement, KeyboardEvent,
+    CanvasRenderingContext2d, 
 };
 
 
@@ -51,8 +44,7 @@ pub fn custom_draw(
     mut _width: usize,
     mut _height: usize,    
     offset_x: usize,
-    offset_y: usize,
-    level_number: usize,
+    offset_y: usize,    
     small: bool,
     selected: bool,
 ) -> bool {
@@ -134,7 +126,7 @@ pub fn custom_draw(
         let smap: Level = get_floor_map(hero_y, hero_x, IS_FLOOR_MAP, *level);
         let bmap: Level = get_floor_map(hero_y, hero_x, IS_BOX_MAP, *level);
 
-        let mut color = "";
+        let mut color;
 
         for y in 0.._count_y_buttom {
             for x in 0.._count_x_rigth {
@@ -143,8 +135,8 @@ pub fn custom_draw(
                 let sx: usize;
                 let sy: usize;
                 if small {
-                    sx = x * 2;
-                    sy = y;
+                    sx = x * 2 + offset_x;
+                    sy = y + offset_y;
                 } else {
                     sx = x * _size + width;
                     sy = y * _size + height;
@@ -285,24 +277,11 @@ fn fill_level(hy: usize, hx: usize, is_flag: usize, mut map: Level) -> Level {
 }
 
 
-pub fn intro_image(ctx: &CanvasRenderingContext2d, width: u32, height: u32, image: usize) {
-    for i in (0..8).rev() {
-        draw_image_ex(ctx, width, height, image, i);
-        // thread::sleep(Duration::from_millis(100));
-    }
-}
-
-pub fn draw_image(ctx: &CanvasRenderingContext2d, width: u32, height: u32, image: usize) {
-    draw_image_ex(ctx, width, height, image, 0);
-}
-
 #[wasm_bindgen]
 pub fn draw_image_ex(
     ctx: &CanvasRenderingContext2d,
-    width: u32,
-    height: u32,
-    image: usize,
-    hide: u8,
+    width: u32,    
+    image: usize,    
 ) {
     let _sh = 60;
     let _sw = 200;
