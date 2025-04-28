@@ -8,6 +8,10 @@ This is a simple **console-based Sokoban game** written in Rust. It is my first 
 
 At the end of Chapter 3 in *The Rust Programming Language*, the authors encourage readers to stop and try writing some Rust code before moving forward. This project is my attempt to apply what I've learned so far.
 
+## Play latest version online
+
+https://kyivfortress.net/base-z47/index.html 
+
 ## Features
 
 - Basic Sokoban mechanics
