@@ -4,7 +4,6 @@ pub mod image2;
 pub mod image3;
 pub mod image4;
 
-
 use hex::encode;
 
 use crate::levels::level_const::WALL_CODE;
@@ -34,8 +33,8 @@ const IS_BOX_MAP: usize = 2;
 pub const F_FLOOR_COLOR: &str = "rgb(216, 253,  184)"; 
 pub const F_SFLOOR_COLOR: &str = "rgb(190, 255,  125)"; 
 pub const F_HERO_COLOR: &str = "rgb(255, 60, 140)"; 
-pub const F_BLOCK_COLOR: &str = "rgb(80, 100, 200)"; 
-pub const F_SBLOCK_COLOR: &str = "rgb(100, 100, 200)"; 
+pub const F_BLOCK_COLOR: &str = "rgb(10, 250, 20)"; 
+pub const F_SBLOCK_COLOR: &str = "rgb(50, 200, 50)"; 
 pub const F_BASE_COLOR: &str = "rgb(255, 220,  120)";
 pub const F_WALL_COLOR: &str = "rgb(85, 85, 255)";
 pub const B_SELECTED_COLOR: &str = "rgb(255, 85, 85)";
@@ -45,29 +44,6 @@ use web_sys::{
     window, CanvasRenderingContext2d, Document, HtmlCanvasElement, HtmlElement, KeyboardEvent,
 };
 
-pub fn draw_squares(ctx: &CanvasRenderingContext2d, width: u32, height: u32) {
-    use js_sys::Math::random;
-
-    let square_size = 20;
-    let cols = width / square_size;
-    let rows = height / square_size;
-
-    for x in 0..cols {
-        for y in 0..rows {
-            let r = (random() * 255.0) as u8;
-            let g = (random() * 255.0) as u8;
-            let b = (random() * 255.0) as u8;
-            let color = format!("rgb({}, {}, {})", r, g, b);
-            ctx.set_fill_style(&color.into());
-            ctx.fill_rect(
-                (x * square_size) as f64,
-                (y * square_size) as f64,
-                square_size as f64,
-                square_size as f64,
-            );
-        }
-    }
-}
 
 
 pub fn custom_draw(
@@ -84,10 +60,16 @@ pub fn custom_draw(
     let _sh = 60;
     let _sw = 200;
     
-   _width *= 5;
 
-   let square_size = (_width) / _sw;
-  //let square_size = 40;
+
+   let mut _size = _width /60;
+   if !small {
+        let _size = 3;
+   }
+   
+   let square_size = _width / _sw;
+   _width = square_size * _sw;
+   _height = square_size * _sh;
 
     let mut _count_x_rigth = 0;
     let mut _count_y_buttom = 20;
@@ -118,18 +100,20 @@ pub fn custom_draw(
         let mut width = _count_x_rigth;
 
         //Drawing game object 5 char width 2 char height
-        width = ((_width / 5) / 2) - (width / 2);
+        width = (_width / 2) - (width * _size   / 2);
         //width = width * 5;
 
 
+
         if _count_y_buttom > L_HEIGHT {
-            _count_y_buttom = L_HEIGHT;
-        }
+            _count_y_buttom = L_HEIGHT ;
+        }                                       
 
         let mut height = _count_y_buttom;
-        height = (_height  / 2) - (height * square_size/ 2);
+        height = _height - (height * _size / 2);
+        web_sys::console::log_1(&_count_y_buttom.to_string().into());
+
         // height = height * 2;
-        web_sys::console::log_1(&height.to_string().into());
 
         let mut hero_x = 0;
         let mut hero_y = 0;
@@ -146,10 +130,11 @@ pub fn custom_draw(
 
         _count_x_rigth = _count_x_rigth + 1;
         //---Here clevel no owners and wrap
-        //   let mut map: Level = *level;
         let map: Level = get_floor_map(hero_y, hero_x, IS_LEVEL_MAP, *level);
         let smap: Level = get_floor_map(hero_y, hero_x, IS_FLOOR_MAP, *level);
         let bmap: Level = get_floor_map(hero_y, hero_x, IS_BOX_MAP, *level);
+
+        let mut color = "";
 
         for y in 0.._count_y_buttom {
             for x in 0.._count_x_rigth {
@@ -161,211 +146,56 @@ pub fn custom_draw(
                     sx = x * 2;
                     sy = y;
                 } else {
-                    sx = x * square_size + width;
-                    sy = y * square_size + height;
+                    sx = x * _size + width;
+                    sy = y * _size + height;
                 }
-                //web_sys::console::log_1(&sy.to_string().into());
-
+		color = "";
                 if cell == WALL_CODE
                 //Wall
                 {
-
-                    let color = F_WALL_COLOR;
-                    ctx.set_fill_style(&color.into());
-                    ctx.fill_rect(
-                        (sx) as f64,
-                        (sy) as f64,
-                        square_size as f64,
-                        square_size as f64,
-                    );
-        
-                    /* 
-                    let style = get_style(F_WALL_COLOR, B_WALL_COLOR);
-
-                    if small {
-                        buffer.push((sx, sy, style.apply_to(WALL_DRAW_SMALL).to_string()));
-                    } else {
-                        buffer.push((sx, sy, style.apply_to(WALL_DRAW_UP).to_string()));
-                        buffer.push((sx, sy + 1, style.apply_to(WALL_DRAW_DN).to_string()));
-                    }
-                    */
+                    color = F_WALL_COLOR;
                 } else if cell == BASE_CODE
                 //Base
                 {
-                    let color = F_BASE_COLOR;
-                    ctx.set_fill_style(&color.into());
-                    ctx.fill_rect(
-                        (x * square_size) as f64,
-                        (y  * square_size) as f64,
-                        square_size as f64,
-                        square_size as f64,
-                    );
-
-                    /* 
-                    let style = get_style(F_BASE_COLOR, B_BASE_COLOR);
-
-                    if small {
-                        buffer.push((sx, sy, style.apply_to(BASE_DRAW_SMALL).to_string()));
-                    } else {
-                        buffer.push((sx, sy, style.apply_to(BASE_DRAW_UP).to_string()));
-                        buffer.push((sx, sy + 1, style.apply_to(BASE_DRAW_DN).to_string()));
-                    }
-                    */
+                    color = F_BASE_COLOR;
                 }                
                  else if cell == BOX_CODE
                 //Box
                 {
                     if bmap[y][x] == LEVEL_CODE {
-			/*
-                        let style = get_style(F_SBLOCK_COLOR, B_SBLOCK_COLOR);
-
-                        if small {
-                            buffer.push((sx, sy, style.apply_to(BOX_DRAW_SMALL).to_string()));
-                        } else {
-                            buffer.push((sx, sy, style.apply_to(BOX_DRAW_UP).to_string()));
-                            buffer.push((sx, sy + 1, style.apply_to(BOX_DRAW_DN).to_string()));
-                        }
-			*/
-                    let color = F_SBLOCK_COLOR;
-                    ctx.set_fill_style(&color.into());
-                    ctx.fill_rect(
-                        (x * square_size) as f64,
-                        (y  * square_size) as f64,
-                        square_size as f64,
-                        square_size as f64,
-                    );
-
-
+                    color = F_SBLOCK_COLOR;
                     } else {
-			/*
-                        let style = get_style(F_BLOCK_COLOR, B_BLOCK_COLOR);
-
-                        if small {
-                            buffer.push((sx, sy, style.apply_to(BOX_DRAW_SMALL).to_string()));
-                        } else {
-                            buffer.push((sx, sy, style.apply_to(BOX_DRAW_UP).to_string()));
-                            buffer.push((sx, sy + 1, style.apply_to(BOX_DRAW_DN).to_string()));
-                        }
-			*/
-                    let color = F_BLOCK_COLOR;
-                    ctx.set_fill_style(&color.into());
-                    ctx.fill_rect(
-                        (x * square_size) as f64,
-                        (y  * square_size) as f64,
-                        square_size as f64,
-                        square_size as f64,
-                    );
-
+                    color = F_BLOCK_COLOR;
                     }
                 } else if cell == HERO_CODE
                 //Hero
                 {
-		/*
-                    let style = get_style(F_HERO_COLOR, B_HERO_COLOR);
-
-                    if small {
-                        buffer.push((sx, sy, style.apply_to(HERO_DRAW_SMALL).to_string()));
-                    } else {
-                        buffer.push((sx, sy, style.apply_to(HERO_DRAW_UP).to_string()));
-                        buffer.push((sx, sy + 1, style.apply_to(HERO_DRAW_DN).to_string()));
-                    }
-		*/
-                    let color = F_HERO_COLOR;
-                    ctx.set_fill_style(&color.into());
-                    ctx.fill_rect(
-                        (x * square_size) as f64,
-                        (y  * square_size) as f64,
-                        square_size as f64,
-                        square_size as f64,
-                    );
-
+                    color = F_HERO_COLOR;
                 } else
                 //Default space
                 {
                    if smap[y][x] == LEVEL_CODE  {
-			/*
-                        let style = get_style(F_SFLOOR_COLOR, B_SFLOOR_COLOR);
-
-                        if small {
-                            buffer.push((sx, sy, style.apply_to(FLOOR_DRAW_SMALL).to_string()));
-                        } else {
-                            buffer.push((sx, sy, style.apply_to(FLOOR_DRAW_UP).to_string()));
-                            buffer.push((sx, sy + 1, style.apply_to(FLOOR_DRAW_DN).to_string()));
-                        }
-			*/
-                    let color =F_SFLOOR_COLOR;
-                    ctx.set_fill_style(&color.into());
-                    ctx.fill_rect(
-                        (x * square_size) as f64,
-                        (y  * square_size) as f64,
-                        square_size as f64,
-                        square_size as f64,
-                    );
-
+                    color =F_SFLOOR_COLOR;
                     } else if map[y][x] == LEVEL_CODE {
-			/*
-                        let style = get_style(F_FLOOR_COLOR, B_FLOOR_COLOR);
-
-                        if small {
-                            buffer.push((sx, sy, style.apply_to(FLOOR_DRAW_SMALL).to_string()));
-                        } else {
-                            buffer.push((sx, sy, style.apply_to(FLOOR_DRAW_UP).to_string()));
-                            buffer.push((sx, sy + 1, style.apply_to(FLOOR_DRAW_DN).to_string()));
-                        }
-			*/
-                    let color =F_FLOOR_COLOR;
-                    ctx.set_fill_style(&color.into());
-                    ctx.fill_rect(
-                        (x * square_size) as f64,
-                        (y  * square_size) as f64,
-                        square_size as f64,
-                        square_size as f64,
-                    );
-
+                    color =F_FLOOR_COLOR;
                     } else if selected {
-                        //let style = get_style(F_FLOOR_COLOR, B_SELECTED_COLOR);
-                        //buffer.push((sx, sy, style.apply_to(FLOOR_DRAW_SMALL).to_string()));
-
-                    let color =F_SFLOOR_COLOR;
+                    color =F_SFLOOR_COLOR;
+                    }       
+                }    
+             if color != "" {
                     ctx.set_fill_style(&color.into());
                     ctx.fill_rect(
-                        (x * square_size) as f64,
-                        (y  * square_size) as f64,
-                        square_size as f64,
-                        square_size as f64,
+                        (sx) as f64,
+                        (sy) as f64,
+                        _size as f64,
+                        _size as f64,
                     );
-
-                    }
-                }             
-            }
-                
+             }
+         
+            }                
         }
 
         /*
-        let mut _offset_y = offset_y;
-        if small {
-            _offset_y = _offset_y + (L_HEIGHT / 2 - _count_y_buttom / 2);
-        }
-
-        let mut _offset_x = offset_x;
-        if small {
-            _offset_x = _offset_x + (L_WIDTH / 2 - _count_x_rigth / 2);
-        }
-
-        for (x, y, text) in buffer {
-            if x > screen_width {
-                continue;
-            }
-
-            if y > screen_height {
-                continue;
-            }
-
-            term.move_cursor_to(x + _offset_x, y + _offset_y).unwrap();
-
-            term.write_line(&text).unwrap();
-        }
-
         if small && selected {
             let s_height: usize = (S_HEIGHT).into();
             term.move_cursor_to(0, s_height - 1).unwrap();
@@ -378,28 +208,15 @@ pub fn custom_draw(
             print!("{}", style.apply_to(&format!("Level {}", level_number)));
             print!("{}", style.apply_to(" :: use row keys for select/move level, Enter/Space to play, ESC to quit, '+/-/p' for music control :: "));
         }
-    }
-     */
-    }
+        */
+        }
+
     true
 }
 
 fn get_floor_map(hy: usize, hx: usize, is_flag: usize, map: Level) -> Level {
 
-    /*
-    let builder = thread::Builder::new().stack_size(10 * 1024 * 1024);
-    let handle = builder
-        .spawn(move || fill_level(hy, hx, is_flag, map))
-        .unwrap();
- */
     fill_level(hy, hx, is_flag, map)
-    /*
-    match handle.join() {
-        Ok(result) => return result,
-        Err(e) => eprintln!("Error: {:?}", e),
-    }
-     */
-   // map
 }
 
 fn is_floor(c: char, is_flag: usize) -> bool {

@@ -35,8 +35,10 @@ fn select_level(levelindex: usize) {
 
 #[wasm_bindgen(start)]
 pub fn start() -> Result<(), JsValue> {
-    let mut imagecount = 0;
+    let mut imagecount = 2;
     let mut levelindex = 1;
+    let mut width = 0;
+    let mut height = 0;
 
     let document = window().unwrap().document().unwrap();
     let canvas = document
@@ -58,13 +60,13 @@ pub fn start() -> Result<(), JsValue> {
     let canvas_clone = Rc::clone(&canvas);
 
     let closure = Closure::wrap(Box::new(move || {
-        let width = window().unwrap().inner_width().unwrap().as_f64().unwrap() as u32;
-        let height = window().unwrap().inner_height().unwrap().as_f64().unwrap() as u32;
+        width = window().unwrap().inner_width().unwrap().as_f64().unwrap() as u32;
+        height = window().unwrap().inner_height().unwrap().as_f64().unwrap() as u32;
         canvas_clone.set_width(width);
         canvas_clone.set_height(height);
         
-
-        load_level(&format!("level{}", levelindex));
+         web_sys::console::log_1(&width.to_string().into());
+       // load_level(&format!("level{}", levelindex));
         view::draw_image_ex(&context_clone.borrow(), width, height, imagecount, 0);        
         view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
     
@@ -73,16 +75,16 @@ pub fn start() -> Result<(), JsValue> {
     window()
         .unwrap()
         .set_onresize(Some(closure.as_ref().unchecked_ref()));
+
     closure.forget();
-
-    let width = window().unwrap().inner_width().unwrap().as_f64().unwrap() as u32;
-    let height = window().unwrap().inner_height().unwrap().as_f64().unwrap() as u32;
-
-    canvas.set_width(width);
-    canvas.set_height(height);
 
     let ctx = context.borrow();
 
+
+    width = window().unwrap().inner_width().unwrap().as_f64().unwrap() as u32;
+    height = window().unwrap().inner_height().unwrap().as_f64().unwrap() as u32;
+    canvas.set_width(width);
+    canvas.set_height(height);
 
     load_level(&format!("level{}", levelindex));
     view::draw_image_ex(&context.borrow(), width, height, imagecount, 0);
@@ -97,7 +99,18 @@ pub fn start() -> Result<(), JsValue> {
 
         let key = event.key().to_lowercase();
 
-     //    web_sys::console::log_1(&key.as_str().into());
+
+        if window().unwrap().inner_width().unwrap().as_f64().unwrap() as u32 !=  width {
+    width = window().unwrap().inner_width().unwrap().as_f64().unwrap() as u32;
+    height = window().unwrap().inner_height().unwrap().as_f64().unwrap() as u32;
+    canvas.set_width(width);
+    canvas.set_height(height);
+      web_sys::console::log_1(&width.to_string().into());
+            view::draw_image_ex(&context_clone.borrow(), width, height, imagecount, 0);
+            view::custom_draw(&context_clone.borrow(), width as usize, height as usize, 0 , 0, levelindex, false, false);
+
+        } 
+
 
         if key == "enter" {
             event.prevent_default();
